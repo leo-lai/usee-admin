@@ -1,0 +1,39 @@
+@charset 'utf-8';
+@import '~scss_vars';
+#app {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	width: 100%;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: all .2s ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+	opacity: 0;
+}
+
+.l-toolbar {
+	background: #f9f9f9;
+	padding: 10px;
+	/* border:1px solid #dfe6ec; */
+	.el-form{
+		margin-bottom: -10px;
+	}
+	.el-form-item {
+		margin-bottom: 10px;
+	}
+}
+
+.el-breadcrumb__separator{
+	top: -2px; position: relative;
+}
+.el-breadcrumb__item__inner a:hover, 
+.el-breadcrumb__item__inner:hover{
+  color: #48576a;
+  cursor: default;
+}

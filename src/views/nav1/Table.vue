@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<!--工具条-->
-		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+		<el-col :span="24" class="l-toolbar">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
 					<el-input v-model="filters.name" placeholder="姓名"></el-input>
@@ -16,7 +16,7 @@
 		</el-col>
 
 		<!--列表-->
-		<el-table :data="users" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+		<el-table :data="users" highlight-current-row v-loading="listLoading" @selection-change="selsChange" >
 			<el-table-column type="selection" width="55">
 			</el-table-column>
 			<el-table-column type="index" width="60">
@@ -40,7 +40,7 @@
 		</el-table>
 
 		<!--工具条-->
-		<el-col :span="24" class="toolbar">
+		<el-col :span="24" class="l-toolbar">
 			<el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
 			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
 			</el-pagination>
@@ -267,6 +267,7 @@
 			},
 			selsChange: function (sels) {
 				this.sels = sels;
+				console.log(this.sels)
 			},
 			//批量删除
 			batchRemove: function () {

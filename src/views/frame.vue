@@ -58,20 +58,18 @@
 				</ul>
 			</aside>
 			<section class="content-container">
-				<div class="grid-content bg-purple-light">
-					<el-col :span="24" class="breadcrumb-container" v-show="$route.path !== '/'">
-						<el-breadcrumb separator="/">
-							<el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
-								{{ item.name }}
-							</el-breadcrumb-item>
-						</el-breadcrumb>
-					</el-col>
-					<el-col :span="24" class="content-wrapper">
-						<transition name="fade" mode="out-in">
-							<router-view></router-view>
-						</transition>
-					</el-col>
-				</div>
+				<el-col :span="24" class="breadcrumb-container" v-show="$route.path !== '/'">
+					<el-breadcrumb separator="›">
+						<el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
+							{{ item.name }}
+						</el-breadcrumb-item>
+					</el-breadcrumb>
+				</el-col>
+				<el-col :span="24" class="content-wrapper">
+					<transition name="fade" mode="out-in">
+						<router-view></router-view>
+					</transition>
+				</el-col>
 			</section>
 		</el-col>
 	</el-row>
@@ -81,7 +79,7 @@
 	export default {
 		data() {
 			return {
-				sysName:'U视一号管理后台',
+				sysName:'U视一号管理系统',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '',
@@ -210,7 +208,8 @@
 			position: absolute;
 			top: 60px;
 			bottom: 0px;
-			overflow: hidden;
+			// overflow: hidden;
+			overflow: overlay;
 			aside {
 				flex:0 0 230px;
 				width: 230px;
@@ -265,6 +264,7 @@
 					}
 				}
 				.content-wrapper {
+					margin-top: 20px;
 					background-color: #fff;
 					box-sizing: border-box;
 				}

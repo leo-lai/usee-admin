@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<br><br><br>
-		<p class="page-container">欢迎登录U视后台管理系统</p>
+		<p class="page-container">欢迎登录U视一号管理系统</p>
 		<br><br><br>
 	</div>
 </template>
