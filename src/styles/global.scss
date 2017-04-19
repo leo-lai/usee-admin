@@ -37,3 +37,31 @@
   color: #48576a;
   cursor: default;
 }
+
+
+.l-dialog{
+  .el-dialog__header{
+    background: #F9FAFC;
+    padding: 15px;
+    border-bottom: 1px solid #EFF2F7;
+  }
+  .el-dialog__body{
+    padding: 15px;
+  }
+}
+.l-panel-tit{font-weight: 700; border-bottom: 1px solid #EFF2F7; padding: 0 0 10px 0; margin-bottom: 10px;}
+.l-inline-row{
+  ._td{padding: 5px 20px 5px 0;/* white-space: nowrap; */ margin: 0; box-sizing: border-box;}
+  p._td{
+    display: inline-block; 
+  }
+}
+.l-inline-row._25{
+  ._td{width: 24%;}
+}
+.l-inline-row._33{
+  ._td{width: 33%;}
+}
+.l-inline-row._50{
+  ._td{width: 49%;}
+}
