@@ -82,9 +82,9 @@
         <!--列表 end-->
 
         <!--分页-->
-        <el-row class="l-toolbar" align="middle">
+        <el-row class="l-toolbar"  type="flex" align="middle">
           <el-col :span="4">
-            总条数：{{orderList[0].total}}
+            <span class="l-text-gray">共{{orderList[0].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
             <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[0].total">
@@ -120,11 +120,11 @@
           <el-table-column prop="orderCode" label="订单编号" min-width="150"></el-table-column>
           <el-table-column prop="startDate" label="下单日期" min-width="150"></el-table-column>
           <el-table-column prop="amount" align="center" label="订单金额" min-width="120"></el-table-column>
-          <el-table-column align="center" label="订单状态" min-width="120">
+          <!-- <el-table-column align="center" label="订单状态" min-width="120">
             <template scope="scope">
               <span :class="formatState(scope.row.ordersState, 'cls')">{{formatState(scope.row.ordersState)}}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -162,10 +162,325 @@
         <!--列表 end-->
 
         <!--分页-->
-        <el-col :span="24" class="l-toolbar l-text-right">
-          <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[1].total">
-          </el-pagination>
-        </el-col>
+        <el-row class="l-toolbar"  type="flex" align="middle">
+          <el-col :span="4">
+            <span class="l-text-gray">共{{orderList[1].total}}条记录</span>
+          </el-col>
+          <el-col :span="20" class="l-text-right">
+            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[1].total">
+            </el-pagination>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="l-tab-pane" v-show="tabIndex == 2">
+        <!--过滤查询-->
+        <el-row class="l-toolbar">
+          <el-col :span="24">
+            <el-form :inline="true">
+              <el-form-item>
+                <el-button-group>
+                  <el-button :disabled="orderList[2].slteds.length===0" @click="examine(1)">批量通过</el-button>
+                  <el-button :disabled="orderList[2].slteds.length===0" @click="examine(0)">批量不通过</el-button>
+                </el-button-group>
+              </el-form-item>
+              <el-form-item label="开发票">
+                <el-select placeholder="是否要求开发票" v-model="filters[2].isPaperCheck" style="width:150px;" @change="getOrderList(1)">
+                  <el-option label="全部" value=""></el-option>
+                  <el-option label="是" value="1"></el-option>
+                  <el-option label="否" value="0"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="下单日期">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[2].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[2].searchKey" @blur="getOrderList(1)">
+                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[2].searchType">
+                    <el-option label="订单编号" value="orderCode"></el-option>
+                    <el-option label="手机号码" value="phoneNumber"></el-option>
+                  </el-select>
+                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col> 
+        </el-row>
+        
+        <!--列表-->
+        <el-table :data="orderList[2].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[2].loading" @selection-change="sltChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="150"></el-table-column>
+          <el-table-column prop="payDate" label="支付时间" min-width="150"></el-table-column>
+          <el-table-column prop="amount" align="center" label="订单金额" min-width="120"></el-table-column>
+          <el-table-column label="购买商品" min-width="100">
+            <template scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <table class="l-inner-table">
+                  <tr>
+                    <th>商品名称</th>
+                    <th>商品数量</th>
+                    <th>商品价格</th>
+                  </tr>
+                  <tr v-for="item in scope.row.ordersInfo">
+                    <td>{{item.goodsName}}</td>
+                    <td>{{item.goodsNumber}}</td>
+                    <td>{{item.goodsAmount}}</td>
+                  </tr>
+                </table>
+                <div slot="reference">
+                  <el-tag>查看商品</el-tag>
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
+          <el-table-column prop="phoneNumber" label="买家手机" min-width="120"></el-table-column>
+          <el-table-column align="center" label="开发票" min-width="120">
+            <template scope="scope">
+              <span :class="{'l-text-error': scope.row.isPaperCheck}">{{scope.row.isPaperCheck?'是':'否'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" min-width="120">
+            <template scope="scope">
+              <el-button size="small" type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
+              <el-button size="small" type="text" @click="examine(1, scope.row.orderId)">审核通过</el-button>
+              <el-button size="small" type="text" @click="examine(0, scope.row.orderId)">审核不通过</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--列表 end-->
+
+        <!--分页-->
+        <el-row class="l-toolbar" type="flex" align="middle">
+          <el-col :span="4">
+            <span class="l-text-gray">共{{orderList[2].total}}条记录</span>
+          </el-col>
+          <el-col :span="20" class="l-text-right">
+            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[2].total">
+            </el-pagination>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="l-tab-pane" v-show="tabIndex == 3">
+        <!--过滤查询-->
+        <el-row class="l-toolbar">
+          <el-col :span="24">
+            <el-form :inline="true">
+              <el-form-item label="审核日期">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[3].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[3].searchKey" @blur="getOrderList(1)">
+                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[3].searchType">
+                    <el-option label="订单编号" value="orderCode"></el-option>
+                    <el-option label="手机号码" value="phoneNumber"></el-option>
+                  </el-select>
+                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col> 
+        </el-row>
+        
+        <!--列表-->
+        <el-table :data="orderList[3].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[3].loading" @selection-change="sltChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
+          <el-table-column prop="examineDate" label="审核日期" min-width="140"></el-table-column>
+          <el-table-column prop="systenUsersName" label="审核人" width="100"></el-table-column>
+          <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
+          <el-table-column prop="phoneNumber" label="买家手机" min-width="120"></el-table-column>
+          <el-table-column prop="region" label="收货区域" min-width="120"></el-table-column>
+          <el-table-column prop="address" label="收货地址" min-width="120"></el-table-column>
+          <el-table-column label="购买商品" min-width="100">
+            <template scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <table class="l-inner-table">
+                  <tr>
+                    <th>商品名称</th>
+                    <th>商品数量</th>
+                    <th>商品价格</th>
+                  </tr>
+                  <tr v-for="item in scope.row.ordersInfo">
+                    <td>{{item.goodsName}}</td>
+                    <td>{{item.goodsNumber}}</td>
+                    <td>{{item.goodsAmount}}</td>
+                  </tr>
+                </table>
+                <div slot="reference">
+                  <el-tag>查看商品</el-tag>
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" min-width="120">
+            <template scope="scope">
+              <el-button type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
+              <el-button type="text" >发货</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--列表 end-->
+
+        <!--分页-->
+        <el-row class="l-toolbar" type="flex" align="middle">
+          <el-col :span="4">
+            <span class="l-text-gray">共{{orderList[3].total}}条记录</span>
+          </el-col>
+          <el-col :span="20" class="l-text-right">
+            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[3].total">
+            </el-pagination>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="l-tab-pane" v-show="tabIndex == 4">
+        <!--过滤查询-->
+        <el-row class="l-toolbar">
+          <el-col :span="24">
+            <el-form :inline="true">
+              <el-form-item label="发货日期">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[4].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[4].searchKey" @blur="getOrderList(1)">
+                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[4].searchType">
+                    <el-option label="订单编号" value="orderCode"></el-option>
+                    <el-option label="手机号码" value="phoneNumber"></el-option>
+                  </el-select>
+                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col> 
+        </el-row>
+        
+        <!--列表-->
+        <!--列表-->
+        <el-table :data="orderList[4].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[4].loading" @selection-change="sltChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
+          <el-table-column prop="examineDate" label="审核日期" min-width="140"></el-table-column>
+          <el-table-column prop="systenUsersName" label="审核人" width="100"></el-table-column>
+          <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
+          <el-table-column prop="phoneNumber" label="买家手机" min-width="120"></el-table-column>
+          <el-table-column prop="region" label="收货区域" min-width="120"></el-table-column>
+          <el-table-column prop="address" label="收货地址" min-width="120"></el-table-column>
+          <el-table-column label="购买商品" min-width="100">
+            <template scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <table class="l-inner-table">
+                  <tr>
+                    <th>商品名称</th>
+                    <th>商品数量</th>
+                    <th>商品价格</th>
+                  </tr>
+                  <tr v-for="item in scope.row.ordersInfo">
+                    <td>{{item.goodsName}}</td>
+                    <td>{{item.goodsNumber}}</td>
+                    <td>{{item.goodsAmount}}</td>
+                  </tr>
+                </table>
+                <div slot="reference">
+                  <el-tag>查看商品</el-tag>
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" min-width="120">
+            <template scope="scope">
+              <el-button type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--列表 end-->
+        <!--列表 end-->
+
+        <!--分页-->
+        <el-row class="l-toolbar" type="flex" align="middle">
+          <el-col :span="4">
+            <span class="l-text-gray">共{{orderList[4].total}}条记录</span>
+          </el-col>
+          <el-col :span="20" class="l-text-right">
+            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[4].total">
+            </el-pagination>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="l-tab-pane" v-show="tabIndex == 5">
+        <!--过滤查询-->
+        <el-row class="l-toolbar">
+          <el-col :span="24">
+            <el-form :inline="true">
+              <el-form-item label="收货日期">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[5].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[5].searchKey" @blur="getOrderList(1)">
+                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[5].searchType">
+                    <el-option label="订单编号" value="orderCode"></el-option>
+                    <el-option label="手机号码" value="phoneNumber"></el-option>
+                  </el-select>
+                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col> 
+        </el-row>
+        
+        <!--列表-->
+        <!--列表-->
+        <el-table :data="orderList[5].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[5].loading" @selection-change="sltChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
+          <el-table-column prop="examineDate" label="收货日期" min-width="140"></el-table-column>
+          <el-table-column align="center" prop="userName" label="可返利时间" min-width="120"></el-table-column>
+          <el-table-column prop="phoneNumber" label="返利金额" min-width="120"></el-table-column>
+          <el-table-column prop="systenUsersName" label="代理人" min-width="120"></el-table-column>
+          <el-table-column prop="address" label="代理人手机" min-width="120"></el-table-column>
+          <el-table-column label="购买商品" min-width="100">
+            <template scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <table class="l-inner-table">
+                  <tr>
+                    <th>商品名称</th>
+                    <th>商品数量</th>
+                    <th>商品价格</th>
+                  </tr>
+                  <tr v-for="item in scope.row.ordersInfo">
+                    <td>{{item.goodsName}}</td>
+                    <td>{{item.goodsNumber}}</td>
+                    <td>{{item.goodsAmount}}</td>
+                  </tr>
+                </table>
+                <div slot="reference">
+                  <el-tag>查看商品</el-tag>
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" min-width="120">
+            <template scope="scope">
+              <el-button type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--列表 end-->
+        <!--列表 end-->
+
+        <!--分页-->
+        <el-row class="l-toolbar" type="flex" align="middle">
+          <el-col :span="4">
+            <span class="l-text-gray">共{{orderList[5].total}}条记录</span>
+          </el-col>
+          <el-col :span="20" class="l-text-right">
+            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[5].total">
+            </el-pagination>
+          </el-col>
+        </el-row>
       </div>
     </div>
 
@@ -180,10 +495,10 @@
             <p class="_td">买家名称：{{orderInfo.data.userName}}</p>
             <p class="_td">买家手机：{{orderInfo.data.phoneNumber}}</p>
             <p class="_td">订单来源：{{orderInfo.data.salesMode}}</p>
-            <p class="_td">代&ensp;理&ensp;商：</p>
+            <p class="_td">代&ensp;理&ensp;商：{{orderInfo.data.agentInfoName}}</p>
             <p class="_td">下单时间：{{orderInfo.data.startDate}}</p>
             <p class="_td">支付时间：{{orderInfo.data.payDate}}</p>
-            <p class="_td">支付方式：微信支付</p>
+            <p class="_td">支付方式：{{orderInfo.data.paymentMethod === 1 ? '微信支付' : ''}}</p>
             <p class="_td">审核时间：{{orderInfo.data.examineDate}}</p>
             <p class="_td">审核结果：{{orderInfo.data.examineState == -1 ? '不通过' : orderInfo.data.examineState == 1 ? '通过' : '未审核'}}</p>
             <p class="_td">审&ensp;核&ensp;人：{{orderInfo.data.systenUsersName}}</p>
@@ -230,6 +545,7 @@ export default {
   data() {
     return {
       orderInfo: {
+        loading: false,
         visible: false,
         data: {},
       },
@@ -285,15 +601,16 @@ export default {
           state: '5',
           cls: 'l-text-link',
           name: '已收货'
-        },{
-          state: '10',
-          cls: '',
-          name: '交易完成'
-        },{
-          state: '-1',
-          cls: '',
-          name: '已关闭'
         },
+        // {
+        //   state: '10',
+        //   cls: '',
+        //   name: '交易完成'
+        // },{
+        //   state: '-1',
+        //   cls: '',
+        //   name: '已关闭'
+        // },
       ],
       tabIndex: '0',
       orderList:[
@@ -343,6 +660,25 @@ export default {
         searchKey: '',
         searchType: '',
         isPaperCheck: '',
+        dateRange: [],
+        startDate: '',
+        finishDate: ''
+      },{
+        searchKey: '',
+        searchType: '',
+        dateRange: [],
+        startDate: '',
+        finishDate: ''
+      },{
+        searchKey: '',
+        searchType: '',
+        isPaperCheck: '',
+        dateRange: [],
+        startDate: '',
+        finishDate: ''
+      },{
+        searchKey: '',
+        searchType: '',
         dateRange: [],
         startDate: '',
         finishDate: ''
@@ -406,20 +742,22 @@ export default {
       let formData = {}
       switch(index){
         case '0': // 全部订单
-          filter.searchType && (formData[filter.searchType] = filter.searchKey)
           formData.isPaperCheck = filter.isPaperCheck
-          formData.startDate = filter.dateRange[0] ? filter.dateRange[0].format('yyyy-MM-dd') : ''
-          formData.finishDate = filter.dateRange[1] ? filter.dateRange[1].format('yyyy-MM-dd') : ''
           break
         case '1': // 未付款
-          filter.searchType && (formData[filter.searchType] = filter.searchKey)
-          formData.startDate = filter.dateRange[0] ? filter.dateRange[0].format('yyyy-MM-dd') : ''
-          formData.finishDate = filter.dateRange[1] ? filter.dateRange[1].format('yyyy-MM-dd') : ''
           break
+        case '2': // 待审核
+          formData.isPaperCheck = filter.isPaperCheck
+          break
+      }
+
+      if(filter){
+        filter.searchType && (formData[filter.searchType] = filter.searchKey)
+        formData.startDate = filter.dateRange[0] ? filter.dateRange[0].format('yyyy-MM-dd') : ''
+        formData.finishDate = filter.dateRange[1] ? filter.dateRange[1].format('yyyy-MM-dd') : ''  
       }
       
       formData.ordersState = tabList.state
-
       orderList.loading = true
       this.$api.order.getList(formData, page, orderList.rows).then(({data})=>{
         orderList.total = data.total
@@ -428,6 +766,30 @@ export default {
         orderList.data = data.orders
       }).finally(()=>{
         orderList.loading = false
+      })
+    },
+    examine(status, orderId) { // 审核
+      if(status == undefined){
+        return 
+      }
+
+      let list = this.orderList[this.tabIndex]
+      if(!orderId){
+        if(list.slteds.length === 0){
+          this.$message('请选择要审核的订单')
+          return
+        }else{
+          orderId = list.slteds.map((item)=>{
+            return item.orderId
+          }).join(',')
+        }
+      }
+      list.loading = true
+      this.$api.order.examine(orderId, status).then(()=>{
+        this.$message('操作成功')
+        this.getOrderList(list.page)
+      }).finally(()=>{
+        list.loading = false
       })
     }
   },

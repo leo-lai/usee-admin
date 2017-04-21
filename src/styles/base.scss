@@ -1,11 +1,9 @@
 @charset 'utf-8';
-html{font-size: 22px;}
+html{font-size: 22px; height: 100%;}
 body {
-  margin: 0px;
-  padding: 0px;
+  margin: 0px; padding: 0px; height: 100%;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
-  font-size: 14px;
-  -webkit-font-smoothing: antialiased;
+  font-size: 14px; -webkit-font-smoothing: antialiased;
 }
 /*字体与图标*/
 @font-face {
@@ -158,7 +156,7 @@ body {
 .l-fs-s{font-size: 0.7rem !important;}
 .l-fs-xs{font-size: 0.6rem !important;}
 .l-text-default{color: inherit !important;}
-.l-text-gray{color: #E5E9F2 !important;}
+.l-text-gray{color: #99A9BF !important;}
 .l-text-warn{color: #F7BA2A !important;}
 .l-text-ok{color: #13CE66 !important;}
 .l-text-error{color: #FF4949 !important;}

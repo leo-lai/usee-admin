@@ -60,6 +60,7 @@ const _http = {
 }
 
 const _api = {
+	baseUrl,
 	login(formData) {
 		storage.session.remove('sessionId')
 		return _http.post('/login', formData)
@@ -97,6 +98,25 @@ const _api = {
 		},
 		getInfo(orderId) {
 			return _http.post('/orderDetails', { orderId })
+		},
+		examine(orderIds, status = '') {
+			return _http.post('/toExamine', { orderIds, isPass: status })
+		}
+	},
+	agent: {
+		getList(formData = {}, page = 1, rows = 20){
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/agentList', formData)
+		},
+		addOrEdit(formData = {}) {
+			return _http.post('/agentAddOrEdit', formData)
+		},
+		addArea(formData = {}){
+			return _http.post('/agentInfoAreas', formData)
+		},
+		getInfo(agentInfoId = '') {
+			return _http.post('/agentInfo', { agentInfoId })
 		}
 	}
 }
