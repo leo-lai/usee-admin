@@ -45,8 +45,8 @@ export default {
         if (valid) {
           this.loading = true
           this.$api.login(this.formData).then(({data}) => {
-            this.$storage.session.set('sessionId', data.sessionId)
-            this.$storage.session.set('userInfo', data)
+            this.$storage.local.set('sessionId', data.sessionId)
+            this.$storage.local.set('userInfo', data)
             this.$href(this.$route.query.to || '/', 'replace')
           }).finally(()=>{
             this.loading = false

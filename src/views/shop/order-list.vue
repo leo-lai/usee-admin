@@ -180,7 +180,7 @@
               <el-form-item>
                 <el-button-group>
                   <el-button :disabled="orderList[2].slteds.length===0" @click="examine(1)">批量通过</el-button>
-                  <el-button :disabled="orderList[2].slteds.length===0" @click="examine(0)">批量不通过</el-button>
+                  <!-- <el-button :disabled="orderList[2].slteds.length===0" @click="examine(0)">批量不通过</el-button> -->
                 </el-button-group>
               </el-form-item>
               <el-form-item label="开发票">
@@ -245,7 +245,7 @@
             <template scope="scope">
               <el-button size="small" type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
               <el-button size="small" type="text" @click="examine(1, scope.row.orderId)">审核通过</el-button>
-              <el-button size="small" type="text" @click="examine(0, scope.row.orderId)">审核不通过</el-button>
+              <!-- <el-button size="small" type="text" @click="examine(0, scope.row.orderId)">审核不通过</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -658,39 +658,39 @@ export default {
       ],
       filters: [{
         searchKey: '',
-        searchType: '',
+        searchType: 'orderCode',
         isPaperCheck: '',
         dateRange: [],
         startDate: '',
         finishDate: ''
       },{
         searchKey: '',
-        searchType: '',
+        searchType: 'orderCode',
         dateRange: [],
         startDate: '',
         finishDate: ''
       },{
         searchKey: '',
-        searchType: '',
+        searchType: 'orderCode',
         isPaperCheck: '',
         dateRange: [],
         startDate: '',
         finishDate: ''
       },{
         searchKey: '',
-        searchType: '',
+        searchType: 'orderCode',
         dateRange: [],
         startDate: '',
         finishDate: ''
       },{
         searchKey: '',
-        searchType: '',
+        searchType: 'orderCode',
         dateRange: [],
         startDate: '',
         finishDate: ''
       },{
         searchKey: '',
-        searchType: '',
+        searchType: 'orderCode',
         dateRange: [],
         startDate: '',
         finishDate: ''

@@ -23,7 +23,7 @@
           <el-col :span="4" class="l-text-right">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" @click="agentInfo.visible = true">新增合伙人</el-button>
+                <el-button type="primary" @click="agentInfo.tabIndex = '0',agentInfo.visible = true">新增合伙人</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -33,7 +33,7 @@
         <el-table :data="agentList[0].data" highlight-current-row v-loading="agentList[0].loading" @selection-change="sltChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="index" label="#" width="55"></el-table-column>
-          <el-table-column prop="agentInfoName" label="姓名" width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="agentInfoName" label="姓名" min-width="120"></el-table-column>
           <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
           <el-table-column prop="area" label="代理区域" min-width="150"></el-table-column>
           <el-table-column prop="numberOfPeople" label="客户人数" align="center" width="100"></el-table-column>
@@ -151,13 +151,17 @@
                 <img v-if="agentForm.businessLicenseImage" :src="agentForm.businessLicenseImage" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 <div slot="tip" class="el-upload__tip">
+                  <p v-show="uploading" class="l-text-hot"><i class="el-icon-loading"></i>&nbsp;图片上传中...</p>
                   <p><el-button v-if="agentForm.businessLicenseImage" @click="agentInfo.preview = true" type="text">查看大图</el-button></p>
                   <p>只能上传jpg/png文件，且不超过2M</p>
                 </div>
               </el-upload>
             </el-form-item>
+            <el-form-item label="推荐码" prop="recommendAgentCode">
+              <el-input v-model="agentForm.recommendAgentCode" placeholder="选填"></el-input>
+            </el-form-item>
             <el-form-item label="备注" prop="remarks" class="l-input-block">
-              <el-input v-model="agentForm.remarks"></el-input>
+              <el-input v-model="agentForm.remarks" placeholder="选填"></el-input>
             </el-form-item>
             <el-form-item class="l-input-block" style="margin-left:100px;">
               <el-button type="primary" @click.native.prevent="submitAgentForm('agentForm')" :loading="agentInfo.submiting">
@@ -193,7 +197,7 @@
           <el-cascader placeholder="请选择代理区域" v-model="cityDataSlted" :options="cityData" :props="{label: 'text'}" filterable ></el-cascader>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="saveAgentArea">保存</el-button>
+          <el-button type="primary" :loading="agentInfoArea.loading" @click="saveAgentArea">保存</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -208,6 +212,7 @@ export default {
       cityData,
       cityDataSlted: [],
 
+      uploading: false,
       agentInfo: {
         tabIndex: '0',
         preview: false,
@@ -221,6 +226,7 @@ export default {
         phoneNumber: '',
         agentCompany: '',
         businessLicenseImage: '',
+        recommendAgentCode: '',
         remarks: ''
       },
       agentRules: {
@@ -306,6 +312,7 @@ export default {
       console.log(event, file, fileList)
     },
     uploadSuccess(response, file, fileList) {
+      this.uploading = false
       this.agentForm.businessLicenseImage = response.data
     },
     uploadError(response, file, fileList) {
@@ -315,14 +322,19 @@ export default {
       })
     },
     uploadBefore(file) {
-      const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      // const isJPG = file.type === 'image/jpeg'
+      const isJPG = true
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+        this.$message.error('上传头像图片只能是 JPG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+
+      if(isJPG && isLt2M){
+        this.uploading = true
       }
       return isJPG && isLt2M
     },
@@ -381,6 +393,7 @@ export default {
     closeAgentDialog(){
       this.agentInfo.visible = false
       if(this.agentForm.agentInfoId){
+        this.agentInfoAreas = []
         this.$refs.agentForm.resetFields()
         this.$refs.agentUpload.clearFiles()
         this.getAgentList(this.agentList[this.tabIndex].page)
@@ -429,6 +442,7 @@ export default {
           type: 'success',
           message: '保存成功'
         })
+        this.cityDataSlted = []
         this.agentInfoAreas.push(data)
         this.agentInfoArea.visible = false
       }).finally(()=>{
@@ -465,6 +479,7 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  position: relative;
 }
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
@@ -486,6 +501,7 @@ export default {
   text-align: center;
   vertical-align: middle;
 }
+
 </style>
 <style lang="scss">
 .l-agent-list{

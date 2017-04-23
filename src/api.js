@@ -2,6 +2,8 @@ import Vue              from 'vue'
 import axios 						from 'axios'
 import { storage }      from 'src/scripts/utils'
 
+let _vue = Vue.prototype
+
 let baseUrl = 'http://api.deyila.cn/useeproject/management/admin'
 const _http = {
   ajax(url = '', data = {}, method = 'GET', contentType = 'form') {
@@ -10,7 +12,7 @@ const _http = {
     }
 
     url = baseUrl + url
-    data.sessionId = storage.session.get('sessionId')
+    data.sessionId = storage.local.get('sessionId')
     return new Promise((resolve, reject)=>{
     	axios({
     		url,
@@ -27,8 +29,8 @@ const _http = {
 			  }]
 	    }).then(function ({ data }){
 	      if (data.resultCode === 4002) { // 登录失效
-	        storage.session.remove('sessionId')
-	        Vue._vue.$message({
+	        storage.local.remove('sessionId')
+	        _vue.$message({
 						type: 'error',
 						message: data.message || '登录失效，请重新登录。',
 						onClose(instance) {
@@ -37,7 +39,7 @@ const _http = {
 					})
 					reject(data.message)
 	      } else if (data.resultCode !== 200) {
-	      	Vue._vue.$message({
+	      	_vue.$message({
 	          message: data.message,
 	          type: 'error'
 	        })
@@ -46,7 +48,7 @@ const _http = {
 	      resolve(data)
 		  })
 		  .catch(function (message) {
-		  	Vue._vue.$message('服务器连接失败')
+		  	_vue.$message('服务器连接失败')
 		  	reject('服务器连接失败')
 		  })
     })
@@ -62,31 +64,31 @@ const _http = {
 const _api = {
 	baseUrl,
 	login(formData) {
-		storage.session.remove('sessionId')
+		storage.local.remove('sessionId')
 		return _http.post('/login', formData)
 	},
 	logout() {
-		let loading = Vue._vue.$loading()
+		let loading = _vue.$loading()
 		return new Promise((resolve)=>{
-			if(storage.session.get('sessionId')){
+			if(storage.local.get('sessionId')){
 				_http.post('/loginOut').then(resolve)
 			}else{
 				resolve()	
 			}
 		}).finally(()=>{
 			loading.close()
-			storage.session.remove('sessionId')
-			storage.session.remove('userInfo')
-			Vue._vue.$href('/login?to=' + encodeURIComponent(window.location.href))
+			storage.local.remove('sessionId')
+			storage.local.remove('userInfo')
+			_vue.$href('/login?to=' + encodeURIComponent(window.location.href))
 		})
 	},
 	checkLogin() {
-		return !!storage.session.get('sessionId')
+		return !!storage.local.get('sessionId')
 	},
 	user: {
 		getInfo() {
 			return new Promise((resolve)=>{
-				resolve({data: storage.session.get('userInfo') || {}})
+				resolve({data: storage.local.get('userInfo') || {}})
 			})
 		}
 	},

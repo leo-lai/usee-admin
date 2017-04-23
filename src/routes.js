@@ -23,9 +23,10 @@ let routes = [{
     hidden: true,
   }, {
     path: '/',
+    redirect: '/index',
     component: frame,
     children: [
-      { path: '', component: index, name: '首页' },
+      { path: '/index', component: index, name: '首页' },
     ], 
     hidden: true,
   }, {
