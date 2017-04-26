@@ -4,6 +4,7 @@ import NotFound         from './views/404.vue'
 import index            from './views/index.vue'
 import GoodsList        from './views/shop/goods-list.vue'
 import OrderList        from './views/shop/order-list.vue'
+import OrderPrint       from './views/shop/order-print.vue'
 import AgentList        from './views/agent/agent-list.vue'
 
 import Table            from './views/nav1/Table.vue'
@@ -20,6 +21,11 @@ let routes = [{
     path: '/404',
     component: NotFound,
     name: '找不到页面',
+    hidden: true,
+  }, {
+    path: '/order/print/:id',
+    component: OrderPrint,
+    name: '打印订单信息',
     hidden: true,
   }, {
     path: '/',
@@ -48,7 +54,7 @@ let routes = [{
     children: [
       { path: 'list', component: AgentList, name: '代理商列表' },
       { path: 'rebate', component: index, name: '返利/申请' },
-      { path: 'setting', component: index, name: '基础设置' },
+      { path: 'setting', component: index, name: '基础设置', hidden:true },
     ],
   }, {
     path: '/',

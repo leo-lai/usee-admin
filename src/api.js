@@ -5,6 +5,10 @@ import { storage }      from 'src/scripts/utils'
 let _vue = Vue.prototype
 
 let baseUrl = 'http://api.deyila.cn/useeproject/management/admin'
+// 正式
+if (['admintest.usee1.com.cn', 'admintest.ushiyihao.com', 'admintest.deyila.cn'].indexOf(window.location.host) > -1) {
+  baseUrl = 'http://apitest.deyila.cn/useeproject/management/admin'
+}
 const _http = {
   ajax(url = '', data = {}, method = 'GET', contentType = 'form') {
   	let headers = {
@@ -85,6 +89,15 @@ const _api = {
 	checkLogin() {
 		return !!storage.local.get('sessionId')
 	},
+	getExpressList() {
+		return _http.post('/expressList').then((reponse)=>{
+			reponse.data = reponse.data || []
+			return reponse
+		})
+	},
+	deliverDoods(formData) {
+		return _http.post('/sendOrder', formData)
+	},
 	user: {
 		getInfo() {
 			return new Promise((resolve)=>{
@@ -103,6 +116,9 @@ const _api = {
 		},
 		examine(orderIds, status = '') {
 			return _http.post('/toExamine', { orderIds, isPass: status })
+		},
+		express(orderId) {
+
 		}
 	},
 	agent: {
@@ -133,17 +149,3 @@ Vue.mixin({
 })
 
 export default _api
-
-// export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data) }
-
-// export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }) }
-
-// export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }) }
-
-// export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }) }
-
-// export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }) }
-
-// export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }) }
-
-// export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }) }

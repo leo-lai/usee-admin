@@ -18,7 +18,7 @@
 				<el-dropdown trigger="hover">
 					<span class="el-dropdown-link userinfo-inner"><img :src="userInfo.avatar" /> {{userInfo.userName}}</span>
 					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item>我的消息</el-dropdown-item>
+						<!-- <el-dropdown-item>我的消息</el-dropdown-item> -->
 						<el-dropdown-item>设置</el-dropdown-item>
 						<el-dropdown-item divided @click.native="$api.logout">退出登录</el-dropdown-item>
 					</el-dropdown-menu>
@@ -140,152 +140,152 @@ export default {
 </script>
 
 <style scoped lang="scss">
-	@import '~scss_vars';
-	.container {
-		position: absolute;
-		top: 0px;
-		bottom: 0px;
-		width: 100%;
-		.header {
-			height: 60px;
-			line-height: 60px;
-			background: $color-primary;
-			color:#fff;
-			.userinfo {
-				text-align: right;
-				padding-right: 35px;
-				float: right;
-				.userinfo-inner {
-					cursor: pointer;
-					color:#fff;
-					img {
-						width: 40px;
-						height: 40px;
-						border-radius: 20px;
-						margin: 10px 0px 10px 10px;
-						float: right;
-					}
-				}
-			}
-			.logo {
-				//width:230px;
-				height:60px;
-				font-size: 22px;
-				padding-left:20px;
-				padding-right:20px;
-				border-color: rgba(238,241,146,0.3);
-				border-right-width: 1px;
-				border-right-style: solid;
+@import '~scss_vars';
+.container {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	width: 100%;
+	.header {
+		height: 60px;
+		line-height: 60px;
+		background: $color-primary;
+		color:#fff;
+		.userinfo {
+			text-align: right;
+			padding-right: 35px;
+			float: right;
+			.userinfo-inner {
+				cursor: pointer;
+				color:#fff;
 				img {
 					width: 40px;
-					float: left;
-					margin: 10px 10px 10px 18px;
+					height: 40px;
+					border-radius: 20px;
+					margin: 10px 0px 10px 10px;
+					float: right;
 				}
-				.txt {
-					color:#fff;
-				}
-			}
-			.logo-width{
-				width:230px;
-			}
-			.logo-collapse-width{
-				width:60px
-			}
-			.tools{
-				white-space: nowrap;
-				padding: 0px 23px;
-				width:14px;
-				height: 60px;
-				line-height: 60px;
-				cursor: pointer;
 			}
 		}
-		.main {
-			display: flex;
-			position: absolute;
-			top: 60px;
-			bottom: 0px;
-			// overflow: hidden;
-			overflow: overlay;
-			aside {
-				flex:0 0 230px;
-				width: 230px;
-				// position: absolute;
-				// top: 0px;
-				// bottom: 0px;
-				.el-menu{
-					height: 100%;
+		.logo {
+			//width:230px;
+			height:60px;
+			font-size: 22px;
+			padding-left:20px;
+			padding-right:20px;
+			border-color: rgba(238,241,146,0.3);
+			border-right-width: 1px;
+			border-right-style: solid;
+			img {
+				width: 40px;
+				float: left;
+				margin: 10px 10px 10px 18px;
+			}
+			.txt {
+				color:#fff;
+			}
+		}
+		.logo-width{
+			width:230px;
+		}
+		.logo-collapse-width{
+			width:60px
+		}
+		.tools{
+			white-space: nowrap;
+			padding: 0px 23px;
+			width:14px;
+			height: 60px;
+			line-height: 60px;
+			cursor: pointer;
+		}
+	}
+	.main {
+		display: flex;
+		position: absolute;
+		top: 60px;
+		bottom: 0px;
+		// overflow: hidden;
+		overflow: overlay;
+		aside {
+			flex:0 0 230px;
+			width: 230px;
+			// position: absolute;
+			// top: 0px;
+			// bottom: 0px;
+			.el-menu{
+				height: 100%;
+			}
+			.collapsed{
+				width:60px;
+				.item{
+					position: relative;
 				}
-				.collapsed{
-					width:60px;
-					.item{
-						position: relative;
-					}
-					.submenu{
-						position:absolute;
-						top:0px;
-						left:60px;
-						z-index:99999;
-						height:auto;
-						display:none;
-					}
+				.submenu{
+					position:absolute;
+					top:0px;
+					left:60px;
+					z-index:99999;
+					height:auto;
+					display:none;
+				}
 
+			}
+		}
+		.menu-collapsed{
+			flex:0 0 60px;
+			width: 60px;
+		}
+		.menu-expanded{
+			flex:0 0 230px;
+			width: 230px;
+		}
+		.content-container {
+			flex:1;
+			// position: absolute;
+			// right: 0px;
+			// top: 0px;
+			// bottom: 0px;
+			// left: 230px;
+			overflow-y: scroll;
+			padding: 20px;
+			.breadcrumb-container {
+				//margin-bottom: 15px;
+				.title {
+					width: 200px;
+					float: left;
+					color: #475669;
+				}
+				.breadcrumb-inner {
+					float: right;
 				}
 			}
-			.menu-collapsed{
-				flex:0 0 60px;
-				width: 60px;
-			}
-			.menu-expanded{
-				flex:0 0 230px;
-				width: 230px;
-			}
-			.content-container {
-				flex:1;
-				// position: absolute;
-				// right: 0px;
-				// top: 0px;
-				// bottom: 0px;
-				// left: 230px;
-				overflow-y: scroll;
-				padding: 20px;
-				.breadcrumb-container {
-					//margin-bottom: 15px;
-					.title {
-						width: 200px;
-						float: left;
-						color: #475669;
-					}
-					.breadcrumb-inner {
-						float: right;
-					}
-				}
-				.content-wrapper {
-					margin-top: 20px;
-					background-color: #fff;
-					box-sizing: border-box;
-				}
+			.content-wrapper {
+				margin-top: 20px;
+				background-color: #fff;
+				box-sizing: border-box;
 			}
 		}
 	}
-	.l-nav-top.el-menu{
-		background: transparent; 
-		.el-menu-item, .el-submenu__title{ 
-			color: #fff; font-size: 16px;
-		}
+}
+.l-nav-top.el-menu{
+	background: transparent; 
+	.el-menu-item, .el-submenu__title{ 
+		color: #fff; font-size: 16px;
 	}
-	.l-nav-top.el-menu--horizontal .el-menu-item:hover, 
-	.l-nav-top.el-menu--horizontal .el-submenu__title:hover,
-	.l-nav-top.el-menu--horizontal .el-menu-item.is-active{
-		background: $color-primary-active;
-	}
-	.l-nav-top.el-menu--horizontal>.el-menu-item:hover, 
-	.l-nav-top.el-menu--horizontal>.el-submenu.is-active .el-submenu__title, 
-	.l-nav-top.el-menu--horizontal>.el-submenu:hover .el-submenu__title{
-		border-bottom-color: transparent;
-	}
-	.l-nav-aside{
-		>li{border-bottom: 1px solid #e4e8f1;}
-		[class^=l-icon]{font-size: 16px; width: 30px; display: inline-block; text-align: center; margin-left: -5px;}
-	}
+}
+.l-nav-top.el-menu--horizontal .el-menu-item:hover, 
+.l-nav-top.el-menu--horizontal .el-submenu__title:hover,
+.l-nav-top.el-menu--horizontal .el-menu-item.is-active{
+	background: $color-primary-active;
+}
+.l-nav-top.el-menu--horizontal>.el-menu-item:hover, 
+.l-nav-top.el-menu--horizontal>.el-submenu.is-active .el-submenu__title, 
+.l-nav-top.el-menu--horizontal>.el-submenu:hover .el-submenu__title{
+	border-bottom-color: transparent;
+}
+.l-nav-aside{
+	>li{border-bottom: 1px solid #e4e8f1;}
+	[class^=l-icon]{font-size: 16px; width: 30px; display: inline-block; text-align: center; margin-left: -5px;}
+}
 </style>

@@ -9,25 +9,31 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="24">
-            <el-form :inline="true">
-              <el-form-item label="开发票">
+            <el-form ref="filterForm-0" :model="filters[0]" :rules="filterRules" :inline="true">
+              <el-form-item label="开发票" prop="isPaperCheck">
                 <el-select placeholder="是否要求开发票" v-model="filters[0].isPaperCheck" style="width:150px;" @change="getOrderList(1)">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="是" value="1"></el-option>
                   <el-option label="否" value="0"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="下单日期">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+              <el-form-item label="下单日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" @blur="getOrderList(1)">
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" @blur="search">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[0].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
                 </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
               </el-form-item>
             </el-form>
           </el-col> 
@@ -75,7 +81,12 @@
           </el-table-column>
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
-              <el-button type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
+              <el-button v-if="scope.row.ordersState == 2" size="small" type="text" @click.native.prevent="examine(1, scope.row.orderId)">审核通过</el-button>
+              <template v-if="scope.row.ordersState == 3">
+                <el-button size="small" type="text" @click.native.prevent="print(scope.row.orderId)">打印</el-button>
+                <el-button size="small" type="text" @click.native.prevent="express(scope.row.orderId)">发货</el-button>
+              </template>
             </template>
           </el-table-column>
         </el-table>
@@ -96,18 +107,24 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="24">
-            <el-form :inline="true">
-              <el-form-item label="下单日期">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[1].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+            <el-form ref="filterForm-1" :model="filters[1]" :rules="filterRules" :inline="true">
+              <el-form-item label="下单日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[1].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[1].searchKey" @blur="getOrderList(1)">
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[1].searchKey" @blur="search">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[1].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
                 </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
               </el-form-item>
             </el-form>
           </el-col> 
@@ -155,7 +172,7 @@
           </el-table-column>
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
-              <el-button type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -176,31 +193,37 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="24">
-            <el-form :inline="true">
+            <el-form ref="filterForm-2" :model="filters[2]" :rules="filterRules" :inline="true">
               <el-form-item>
                 <el-button-group>
-                  <el-button :disabled="orderList[2].slteds.length===0" @click="examine(1)">批量通过</el-button>
-                  <!-- <el-button :disabled="orderList[2].slteds.length===0" @click="examine(0)">批量不通过</el-button> -->
+                  <el-button :disabled="orderList[2].slteds.length===0" @click.native.prevent="examine(1)">批量通过</el-button>
+                  <!-- <el-button :disabled="orderList[2].slteds.length===0" @click.native.prevent="examine(0)">批量不通过</el-button> -->
                 </el-button-group>
               </el-form-item>
-              <el-form-item label="开发票">
-                <el-select placeholder="是否要求开发票" v-model="filters[2].isPaperCheck" style="width:150px;" @change="getOrderList(1)">
+              <el-form-item label="开发票" prop="isPaperCheck">
+                <el-select placeholder="是否要求开发票" v-model="filters[2].isPaperCheck" style="width:150px;" @change="search">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="是" value="1"></el-option>
                   <el-option label="否" value="0"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="下单日期">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[2].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+              <el-form-item label="下单日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[2].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[2].searchKey" @blur="getOrderList(1)">
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[2].searchKey" @blur="search">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[2].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
                 </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
               </el-form-item>
             </el-form>
           </el-col> 
@@ -243,9 +266,9 @@
           </el-table-column>
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
-              <el-button size="small" type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
-              <el-button size="small" type="text" @click="examine(1, scope.row.orderId)">审核通过</el-button>
-              <!-- <el-button size="small" type="text" @click="examine(0, scope.row.orderId)">审核不通过</el-button> -->
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
+              <el-button size="small" type="text" @click.native.prevent="examine(1, scope.row.orderId)">审核通过</el-button>
+              <!-- <el-button size="small" type="text" @click.native.prevent="examine(0, scope.row.orderId)">审核不通过</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -266,18 +289,24 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="24">
-            <el-form :inline="true">
-              <el-form-item label="审核日期">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[3].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+            <el-form ref="filterForm-3" :model="filters[3]" :rules="filterRules" :inline="true">
+              <el-form-item label="审核日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[3].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[3].searchKey" @blur="getOrderList(1)">
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[3].searchKey" @blur="search">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[3].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
                 </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
               </el-form-item>
             </el-form>
           </el-col> 
@@ -315,10 +344,11 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作" min-width="120">
+          <el-table-column align="center" label="操作" min-width="150">
             <template scope="scope">
-              <el-button type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
-              <el-button type="text" >发货</el-button>
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
+              <el-button size="small" type="text" @click.native.prevent="print(scope.row.orderId)">打印</el-button>
+              <el-button size="small" type="text" @click.native.prevent="express(scope.row.orderId)">发货</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -339,18 +369,24 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="24">
-            <el-form :inline="true">
-              <el-form-item label="发货日期">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[4].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+            <el-form ref="filterForm-4" :model="filters[4]" :rules="filterRules" :inline="true">
+              <el-form-item label="发货日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[4].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[4].searchKey" @blur="getOrderList(1)">
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[4].searchKey" @blur="search">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[4].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
                 </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
               </el-form-item>
             </el-form>
           </el-col> 
@@ -391,7 +427,7 @@
           </el-table-column>
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
-              <el-button type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -413,18 +449,24 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="24">
-            <el-form :inline="true">
-              <el-form-item label="收货日期">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[5].dateRange" :picker-options="pickerOptions" @change="getOrderList(1)"></el-date-picker>
+            <el-form ref="filterForm-5" :model="filters[5]" :rules="filterRules" :inline="true">
+              <el-form-item label="收货日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[5].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[5].searchKey" @blur="getOrderList(1)">
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[5].searchKey" @blur="search">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[5].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="search" @click="getOrderList(1)"></el-button>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
                 </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
               </el-form-item>
             </el-form>
           </el-col> 
@@ -464,7 +506,7 @@
           </el-table-column>
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
-              <el-button type="text" @click="getOrderInfo(scope.row.orderId)">查看明细</el-button>
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -482,8 +524,165 @@
           </el-col>
         </el-row>
       </div>
-    </div>
+      <div class="l-tab-pane" v-show="tabIndex == 6">
+        <!--过滤查询-->
+        <el-row class="l-toolbar">
+          <el-col :span="24">
+            <el-form ref="filterForm-5" :model="filters[6]" :rules="filterRules" :inline="true">
+              <el-form-item label="收货日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[6].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
+              </el-form-item>
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[6].searchKey" @blur="search">
+                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[6].searchType">
+                    <el-option label="订单编号" value="orderCode"></el-option>
+                    <el-option label="手机号码" value="phoneNumber"></el-option>
+                  </el-select>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
+                </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
+              </el-form-item>
+            </el-form>
+          </el-col> 
+        </el-row>
+        
+        <!--列表-->
+        <!--列表-->
+        <el-table :data="orderList[6].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[6].loading" @selection-change="sltChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
+          <el-table-column prop="examineDate" label="收货日期" min-width="140"></el-table-column>
+          <el-table-column align="center" prop="userName" label="可返利时间" min-width="120"></el-table-column>
+          <el-table-column prop="phoneNumber" label="返利金额" min-width="120"></el-table-column>
+          <el-table-column prop="systenUsersName" label="代理人" min-width="120"></el-table-column>
+          <el-table-column prop="address" label="代理人手机" min-width="120"></el-table-column>
+          <el-table-column label="购买商品" min-width="100">
+            <template scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <table class="l-inner-table">
+                  <tr>
+                    <th>商品名称</th>
+                    <th>商品数量</th>
+                    <th>商品价格</th>
+                  </tr>
+                  <tr v-for="item in scope.row.ordersInfo">
+                    <td>{{item.goodsName}}</td>
+                    <td>{{item.goodsNumber}}</td>
+                    <td>{{item.goodsAmount}}</td>
+                  </tr>
+                </table>
+                <div slot="reference">
+                  <el-tag>查看商品</el-tag>
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" min-width="120">
+            <template scope="scope">
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--列表 end-->
+        <!--列表 end-->
 
+        <!--分页-->
+        <el-row class="l-toolbar" type="flex" align="middle">
+          <el-col :span="4">
+            <span class="l-text-gray">共{{orderList[6].total}}条记录</span>
+          </el-col>
+          <el-col :span="20" class="l-text-right">
+            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[6].total">
+            </el-pagination>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="l-tab-pane" v-show="tabIndex == 7">
+        <!--过滤查询-->
+        <el-row class="l-toolbar">
+          <el-col :span="24">
+            <el-form ref="filterForm-5" :model="filters[7]" :rules="filterRules" :inline="true">
+              <el-form-item label="收货日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[7].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
+              </el-form-item>
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[7].searchKey" @blur="search">
+                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[7].searchType">
+                    <el-option label="订单编号" value="orderCode"></el-option>
+                    <el-option label="手机号码" value="phoneNumber"></el-option>
+                  </el-select>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
+                </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
+              </el-form-item>
+            </el-form>
+          </el-col> 
+        </el-row>
+        
+        <!--列表-->
+        <!--列表-->
+        <el-table :data="orderList[7].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[7].loading" @selection-change="sltChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
+          <el-table-column prop="examineDate" label="收货日期" min-width="140"></el-table-column>
+          <el-table-column align="center" prop="userName" label="可返利时间" min-width="120"></el-table-column>
+          <el-table-column prop="phoneNumber" label="返利金额" min-width="120"></el-table-column>
+          <el-table-column prop="systenUsersName" label="代理人" min-width="120"></el-table-column>
+          <el-table-column prop="address" label="代理人手机" min-width="120"></el-table-column>
+          <el-table-column label="购买商品" min-width="100">
+            <template scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <table class="l-inner-table">
+                  <tr>
+                    <th>商品名称</th>
+                    <th>商品数量</th>
+                    <th>商品价格</th>
+                  </tr>
+                  <tr v-for="item in scope.row.ordersInfo">
+                    <td>{{item.goodsName}}</td>
+                    <td>{{item.goodsNumber}}</td>
+                    <td>{{item.goodsAmount}}</td>
+                  </tr>
+                </table>
+                <div slot="reference">
+                  <el-tag>查看商品</el-tag>
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" min-width="120">
+            <template scope="scope">
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--列表 end-->
+        <!--列表 end-->
+
+        <!--分页-->
+        <el-row class="l-toolbar" type="flex" align="middle">
+          <el-col :span="4">
+            <span class="l-text-gray">共{{orderList[7].total}}条记录</span>
+          </el-col>
+          <el-col :span="20" class="l-text-right">
+            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[7].total">
+            </el-pagination>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
     <!--订单详情-->
     <el-dialog title="订单详情" custom-class="l-dialog l-order-info" v-model="orderInfo.visible" >
       <div class="l-panel l-margin-b">
@@ -537,6 +736,21 @@
         </div>
       </div>
     </el-dialog>
+
+    <!-- 快递列表 -->
+    <el-dialog title="选择快递" custom-class="l-dialog" v-model="expressInfo.visible" size="tiny">
+      <div class="l-express-list">
+        <div class="_item" v-for="item in expressInfo.data" 
+          :class="{'_active': expressInfo.slted.expressId === item.expressId}" 
+          @click="expressInfo.slted = item">
+          <h3>{{item.expressName}}</h3>
+          <p>{{expressInfo.payType[item.payType]}}</p>
+        </div>
+      </div>
+      <div class="l-text-center l-margin-t">
+        <el-button type="primary" @click="expressOk">确定发货</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -544,37 +758,51 @@
 export default {
   data() {
     return {
+      expressInfo: {
+        orderId: '',
+        visible: false,
+        payType: {
+          'SHIPPER': '寄方付',
+          'CONSIGNEE': '到付',
+          'MONTHLY': '月结',
+          'THIRDPARTY': '第三方支付'
+        },
+        slted: {},
+        data: []
+      },
       orderInfo: {
         loading: false,
         visible: false,
         data: {},
       },
       pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', [start, end]);
+        shortcuts: [
+          {
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
           }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
-          }
-        }]
+        ]
       },
       tabList: [
         {
@@ -596,105 +824,135 @@ export default {
         },{
           state: '4',
           cls: 'l-text-link',
-          name: '待收货'
+          name: '已发货'
         },{
           state: '5',
           cls: 'l-text-link',
-          name: '已收货'
+          name: '客户已收货'
         },
-        // {
-        //   state: '10',
-        //   cls: '',
-        //   name: '交易完成'
-        // },{
-        //   state: '-1',
-        //   cls: '',
-        //   name: '已关闭'
-        // },
+        {
+          state: '10',
+          cls: '',
+          name: '交易完成'
+        },{
+          state: '-1',
+          cls: 'l-text-gray',
+          name: '已取消'
+        }
       ],
       tabIndex: '0',
       orderList:[
         {
           data: [],
           slteds: [],
-          total: 0,
+          total: 1,
           loading: false,
         },{
           data: [],
           slteds: [],
-          total: 0,
+          total: 1,
           loading: false,
         },{
           data: [],
           slteds: [],
-          total: 0,
+          total: 1,
           loading: false,
         },{
           data: [],
           slteds: [],
-          total: 0,
+          total: 1,
           loading: false,
         },{
           data: [],
           slteds: [],
-          total: 0,
+          total: 1,
           loading: false,
         },{
           data: [],
           slteds: [],
-          total: 0,
+          total: 1,
           loading: false,
         },{
           data: [],
           slteds: [],
-          total: 0,
+          total: 1,
           loading: false,
         },{
           data: [],
           slteds: [],
-          total: 0,
+          total: 1,
           loading: false,
-        },
+        },{
+          data: [],
+          slteds: [],
+          total: 1,
+          loading: false,
+        },{
+          data: [],
+          slteds: [],
+          total: 1,
+          loading: false,
+        }
       ],
-      filters: [{
-        searchKey: '',
-        searchType: 'orderCode',
-        isPaperCheck: '',
+
+      filterRules:{
+        searchKey: [],
         dateRange: [],
-        startDate: '',
-        finishDate: ''
-      },{
-        searchKey: '',
-        searchType: 'orderCode',
-        dateRange: [],
-        startDate: '',
-        finishDate: ''
-      },{
-        searchKey: '',
-        searchType: 'orderCode',
-        isPaperCheck: '',
-        dateRange: [],
-        startDate: '',
-        finishDate: ''
-      },{
-        searchKey: '',
-        searchType: 'orderCode',
-        dateRange: [],
-        startDate: '',
-        finishDate: ''
-      },{
-        searchKey: '',
-        searchType: 'orderCode',
-        dateRange: [],
-        startDate: '',
-        finishDate: ''
-      },{
-        searchKey: '',
-        searchType: 'orderCode',
-        dateRange: [],
-        startDate: '',
-        finishDate: ''
-      }],
+        isPaperCheck: []
+      },
+      filters: [
+        {
+          searchKey: '',
+          searchType: 'orderCode',
+          isPaperCheck: '',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        },{
+          searchKey: '',
+          searchType: 'orderCode',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        },{
+          searchKey: '',
+          searchType: 'orderCode',
+          isPaperCheck: '',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        },{
+          searchKey: '',
+          searchType: 'orderCode',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        },{
+          searchKey: '',
+          searchType: 'orderCode',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        },{
+          searchKey: '',
+          searchType: 'orderCode',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        },{
+          searchKey: '',
+          searchType: 'orderCode',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        },{
+          searchKey: '',
+          searchType: 'orderCode',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        }
+      ]
     }
   },
   methods: {
@@ -734,7 +992,18 @@ export default {
         loading.close()
       })
     },
+    clearFilter() {
+      this.$refs['filterForm-' + this.tabIndex].resetFields()
+      this.getOrderList()
+    },
+    refreshList() {
+      this.getOrderList(this.orderList[this.tabIndex].page)
+    },
+    search() {
+      this.getOrderList()
+    },
     getOrderList(page = 1) {
+
       let index = this.tabIndex
       let orderList = this.orderList[index]
       let tabList = this.tabList[index]
@@ -759,6 +1028,8 @@ export default {
       
       formData.ordersState = tabList.state
       orderList.loading = true
+
+      page = Math.min(page, orderList.total)
       this.$api.order.getList(formData, page, orderList.rows).then(({data})=>{
         orderList.total = data.total
         orderList.page = data.page
@@ -767,6 +1038,47 @@ export default {
       }).finally(()=>{
         orderList.loading = false
       })
+    },
+    print(orderId = '') { // 打印
+      window.open('/order/print/' + orderId, '_blank')
+    },
+    express(orderId = ''){
+      this.expressInfo.orderId = orderId
+      let expressList = this.$storage.session.get('temp_express_list')
+      if(expressList){
+        this.expressInfo.data = expressList
+        this.expressInfo.visible = true
+      }else{
+        let loading = this.$loading()
+        this.$api.getExpressList().then(({data})=>{
+          this.$storage.session.set('temp_express_list', data)
+          this.expressInfo.data = data
+          this.expressInfo.visible = true
+        }).finally(()=>{
+          loading.close()
+        })
+      }
+    },
+    expressOk() {
+      if(this.expressInfo.slted && this.expressInfo.slted.expressId){
+        this.expressInfo.loading = true
+        this.$api.deliverDoods({
+          expressId: this.expressInfo.slted.expressId,
+          orderId: this.expressInfo.orderId
+        }).then(()=>{
+          this.$message({
+            type: 'success',
+            message: '发货成功'
+          })
+          this.expressInfo.visible = false
+          this.refreshList()
+        }).finally(()=>{
+          this.expressInfo.loading = false
+        })
+      }else{
+        this.$message('请选择快递')
+      }
+      
     },
     examine(status, orderId) { // 审核
       if(status == undefined){
@@ -799,6 +1111,32 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '~scss_vars';
+.l-express-list{
+  overflow-x: hidden; margin: -15px 0 0 -15px;
+  ._item{
+    border:1px solid #ddd; padding: 15px; float: left; min-width: 133px;
+    margin: 15px 0 0 15px; cursor: pointer;
+  }
+  h3, p{margin: 10px 0;}
+  ._item:hover{
+    border-color: $color-primary;    
+  }
+  ._active{
+    position: relative;
+    border: 1px solid $color-primary;
+    overflow: hidden;
+  }
+  ._active:after{
+    content: '\E667';
+    font-family: 'l-iconfont';
+    position: absolute;
+    bottom: -7px;
+    right: -3px;
+    color: $color-primary;
+    font-size: 1.6rem;
+  }
+}
 .l-order{
   .el-select .el-input {
     min-width: 120px;

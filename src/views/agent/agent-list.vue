@@ -5,25 +5,31 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="20">
-            <el-form :inline="true">
-              <el-form-item label="加入日期">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="getAgentList(1)"></el-date-picker>
+            <el-form ref="filterForm-0" :model="filters[0]" :rules="filterRules" :inline="true">
+              <el-form-item label="加入日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" @blur="getAgentList(1)">
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" @blur="search">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[0].searchType">
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                     <el-option label="合伙人名称" value="agentInfoName"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="search" @click="getAgentList(1)"></el-button>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
                 </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
               </el-form-item>
             </el-form>
           </el-col>
           <el-col :span="4" class="l-text-right">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" @click="agentInfo.tabIndex = '0',agentInfo.visible = true">新增合伙人</el-button>
+                <el-button type="primary" @click="openAgentDialog(1)">新增合伙人</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -49,7 +55,7 @@
           </el-table-column>
           <el-table-column label="操作" min-width="150" align="center">
             <template scope="scope">
-              <el-button size="small" @click="editAgentInfo(scope.row.agentInfoId)">编辑</el-button>
+              <el-button size="small" type="text" @click="editAgentInfo(scope.row.agentInfoId)">编辑</el-button>
               <!-- <el-button size="small">查看二维码</el-button> -->
             </template>
           </el-table-column>
@@ -71,23 +77,28 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="20">
-            <el-form :inline="true">
-              <el-form-item label="加入日期">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="getAgentList(1)"></el-date-picker>
+            <el-form ref="filterForm-1" :model="filters[1]" :rules="filterRules" :inline="true">
+              <el-form-item label="加入日期" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[1].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" @blur="getAgentList(1)">
-                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[0].searchType">
+              <el-form-item prop="searchKey">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[1].searchKey" @blur="search">
+                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[1].searchType">
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                     <el-option label="合伙人名称" value="agentInfoName"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="search" @click="getAgentList(1)"></el-button>
+                  <el-button slot="append" icon="search" @click="search"></el-button>
                 </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button-group>
+                  <el-button @click="clearFilter">清除过滤</el-button>
+                  <el-button @click="refreshList">刷新列表</el-button>
+                </el-button-group>  
               </el-form-item>
             </el-form>
           </el-col>
           <el-col :span="4" class="l-text-right">
-            
           </el-col>
         </el-row>
         
@@ -95,13 +106,13 @@
         <el-table :data="agentList[1].data" highlight-current-row v-loading="agentList[1].loading" @selection-change="sltChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="index" label="#" width="55"></el-table-column>
-          <el-table-column prop="agentInfoName" label="姓名" width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="agentInfoName" label="姓名" min-width="120" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
           <el-table-column prop="numberOfPeople" label="客户人数" align="center" min-width="100"></el-table-column>
           <el-table-column prop="accumulatedIncome" label="累计收益" align="center" min-width="120"></el-table-column>
           <el-table-column prop="accountBalance" label="账户余额" align="center" min-width="120"></el-table-column>
           <el-table-column prop="becomeAgentDate" label="加入日期" min-width="150"></el-table-column>  
-          <el-table-column label="订单状态" align="center" min-width="120">
+          <!-- <el-table-column label="订单状态" align="center" min-width="120">
             <template scope="scope">
               <span class="l-text-error" v-if="scope.row.isFrozen">账户冻结</span>
               <span class="l-text-ok" v-else>正常使用</span>
@@ -109,10 +120,10 @@
           </el-table-column>
           <el-table-column label="操作" min-width="150" align="center">
             <template scope="scope">
-              <el-button size="small" @click="editAgentInfo(scope.row.agentInfoId)">编辑</el-button>
-              <!-- <el-button size="small">查看二维码</el-button> -->
+              <el-button size="small" type="text" @click="editAgentInfo(scope.row.agentInfoId)">编辑</el-button>
+              <el-button size="small">查看二维码</el-button>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <!--列表 end-->
 
@@ -129,15 +140,15 @@
       </el-tab-pane>
     </el-tabs>
     <!--合伙人信息-->
-    <el-dialog title="合伙人信息" custom-class="l-dialog" @close="closeAgentDialog" :close-on-click-modal="false" v-model="agentInfo.visible">
+    <el-dialog title="合伙人信息" ref="agentDialog" custom-class="l-dialog" @close="closeAgentDialog" :close-on-click-modal="false" v-model="agentInfo.visible">
       <el-tabs v-model="agentInfo.tabIndex">
         <el-tab-pane label="基本信息">
-          <el-form :inline="true" :model="agentForm" :rules="agentRules" class="l-agent-info" ref="agentForm"  label-width="100px">
+          <el-form ref="agentForm" :model="agentForm" :rules="agentRules" :inline="true" class="l-agent-info" label-width="100px">
             <el-form-item label="合伙人姓名" prop="agentInfoName">
               <el-input v-model="agentForm.agentInfoName"></el-input>
             </el-form-item>
             <el-form-item label="手机号码" prop="phoneNumber">
-              <el-input v-model="agentForm.phoneNumber"></el-input>
+              <el-input v-model="agentForm.phoneNumber" :maxlength="11" :disabled="agentInfo.type == 2"></el-input>
             </el-form-item>
             <el-form-item label="合伙人单位" prop="agentCompany" class="l-input-block">
               <el-input v-model="agentForm.agentCompany"></el-input>
@@ -167,6 +178,10 @@
               <el-button type="primary" @click.native.prevent="submitAgentForm('agentForm')" :loading="agentInfo.submiting">
                 &nbsp;&nbsp;保存信息&nbsp;&nbsp;
               </el-button>
+              
+              <!-- <el-button class="l-margin-l" @click.native.prevent="resetAgentForm('agentForm')">
+                &nbsp;&nbsp;重置&nbsp;&nbsp;
+              </el-button> -->
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -187,10 +202,7 @@
         </el-tab-pane>
       </el-tabs>
     </el-dialog>
-    <el-dialog v-model="agentInfo.preview" size="tiny">
-      <img width="100%" :src="agentForm.businessLicenseImage" alt="">
-    </el-dialog>
-
+    <!-- 代理区域 -->
     <el-dialog v-model="agentInfoArea.visible" size="tiny" :close-on-click-modal="false">
       <el-form :inline="true" label-width="80px">
         <el-form-item label="代理区域">
@@ -200,6 +212,10 @@
           <el-button type="primary" :loading="agentInfoArea.loading" @click="saveAgentArea">保存</el-button>
         </el-form-item>
       </el-form>
+    </el-dialog>
+    <!-- 图片预览 -->
+    <el-dialog v-model="agentInfo.preview" size="tiny">
+      <img width="100%" :src="agentForm.businessLicenseImage" alt="">
     </el-dialog>
   </div>
 </template>
@@ -214,6 +230,7 @@ export default {
 
       uploading: false,
       agentInfo: {
+        type: 1,
         tabIndex: '0',
         preview: false,
         submiting: false,
@@ -292,6 +309,11 @@ export default {
         page: 1,
         total: 0
       }],
+
+      filterRules:{
+        searchKey: [],
+        dateRange: []
+      },
       filters:[{
         searchKey: '',
         searchType: 'phoneNumber',
@@ -358,6 +380,16 @@ export default {
     pageChange(page) {
       this.getAgentList(page)
     },
+    clearFilter() {
+      this.$refs['filterForm-' + this.tabIndex].resetFields()
+      this.getAgentList()
+    },
+    refreshList() {
+      this.getAgentList()
+    },
+    search() {
+      this.getAgentList()
+    },
     getAgentList(page = 1) {
       let index = this.tabIndex
       let agentList = this.agentList[index]
@@ -390,20 +422,76 @@ export default {
       }
       this.agentInfoArea.visible = true
     },
+    saveAgentArea() {
+      if(this.cityDataSlted.length === 0){
+        this.$message('请选择代理区域')
+        return
+      }
+      this.agentInfoArea.loading = true
+      this.$api.agent.addArea({
+        agentInfoId: this.agentForm.agentInfoId,
+        provinceId: this.cityDataSlted[0],
+        cityId: this.cityDataSlted[1],
+        areaId: this.cityDataSlted[2]
+      }).then(({data})=>{
+        this.$message({
+          type: 'success',
+          message: '保存成功'
+        })
+        this.cityDataSlted = []
+        this.agentInfoAreas.push(data)
+        this.agentInfoArea.visible = false
+        this.$refs.agentDialog.close()
+      }).finally(()=>{
+        this.agentInfoArea.loading = false
+      })
+    },
+    openAgentDialog(type = 1) {
+      this.agentInfo.type = type
+      this.agentInfo.visible = true
+      this.agentInfo.tabIndex = '0'
+    },
     closeAgentDialog(){
       this.agentInfo.visible = false
-      if(this.agentForm.agentInfoId){
-        this.agentInfoAreas = []
-        this.$refs.agentForm.resetFields()
-        this.$refs.agentUpload.clearFiles()
+      this.agentInfoAreas = []
+      this.resetAgentForm()
+      if(this.agentInfo.submited){
         this.getAgentList(this.agentList[this.tabIndex].page)
       }
+    },
+    resetAgentForm() {
+      this.agentForm.agentInfoId = ''
+      this.$refs.agentForm.resetFields()
+      this.$refs.agentUpload.clearFiles()  
+    },
+    editAgentInfo(agentInfoId) {
+      if(!agentInfoId){
+        this.$message('代理商ID为空')
+        return
+      }
+
+      let loading = this.$loading()
+      this.$api.agent.getInfo(agentInfoId).then(({data})=>{
+        this.agentInfo.submited = false
+        this.openAgentDialog(2)
+        if(data){
+          this.$nextTick(()=>{
+            this.agentInfoAreas = data.agentInfoAreas
+            Object.keys(this.agentForm).forEach((key)=>{
+              this.agentForm[key] = data[key]
+            }) 
+          })
+        }
+      }).finally(()=>{
+        loading.close()
+      })
     },
     submitAgentForm(formName) {
       this.$refs.agentForm.validate((valid) => {
         if (valid) {
           this.agentInfo.submiting = true
           this.$api.agent.addOrEdit(this.agentForm).then(({data})=>{
+            this.agentInfo.submited = true
             if(data){
               this.agentForm.agentInfoId = data
               this.$message({
@@ -424,48 +512,6 @@ export default {
           console.log('error submit!!');
           return false;
         }
-      })
-    },
-    saveAgentArea() {
-      if(this.cityDataSlted.length === 0){
-        this.$message('请选择代理区域')
-        return
-      }
-      this.agentInfoArea.loading = true
-      this.$api.agent.addArea({
-        agentInfoId: this.agentForm.agentInfoId,
-        provinceId: this.cityDataSlted[0],
-        cityId: this.cityDataSlted[1],
-        areaId: this.cityDataSlted[2]
-      }).then(({data})=>{
-        this.$message({
-          type: 'success',
-          message: '保存成功'
-        })
-        this.cityDataSlted = []
-        this.agentInfoAreas.push(data)
-        this.agentInfoArea.visible = false
-      }).finally(()=>{
-        this.agentInfoArea.loading = false
-      })
-    },
-    editAgentInfo(agentInfoId) {
-      if(!agentInfoId){
-        this.$message('代理商ID为空')
-        return
-      }
-
-      let loading = this.$loading()
-      this.$api.agent.getInfo(agentInfoId).then(({data})=>{
-        this.agentInfo.visible = true
-        if(data){
-          this.agentInfoAreas = data.agentInfoAreas
-          Object.keys(this.agentForm).forEach((key)=>{
-            this.agentForm[key] = data[key]
-          })  
-        }
-      }).finally(()=>{
-        loading.close()
       })
     }
   },
@@ -501,7 +547,6 @@ export default {
   text-align: center;
   vertical-align: middle;
 }
-
 </style>
 <style lang="scss">
 .l-agent-list{
