@@ -81,11 +81,14 @@
           </el-table-column>
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
-              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
+              <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看详情</el-button>
               <el-button v-if="scope.row.ordersState == 2" size="small" type="text" @click.native.prevent="examine(1, scope.row.orderId)">审核通过</el-button>
               <template v-if="scope.row.ordersState == 3">
-                <el-button size="small" type="text" @click.native.prevent="print(scope.row.orderId)">打印</el-button>
+                <el-button size="small" type="text" @click.native.prevent="print(scope.row.orderId)">打印订单</el-button>
                 <el-button size="small" type="text" @click.native.prevent="express(scope.row.orderId)">发货</el-button>
+              </template>
+              <template v-if="scope.row.ordersState == 4">
+                <el-button size="small" type="text" @click.native.prevent="expressView(scope.row.expressURL)">查看快递单</el-button>
               </template>
             </template>
           </el-table-column>
@@ -428,6 +431,7 @@
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
               <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
+              <el-button v-if="scope.row.ordersState == 4" size="small" type="text" @click.native.prevent="expressView(scope.row.expressURL)">查看快递单</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -479,10 +483,10 @@
           <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
           <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
           <el-table-column prop="examineDate" label="收货日期" min-width="140"></el-table-column>
-          <el-table-column align="center" prop="userName" label="可返利时间" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="返利金额" min-width="120"></el-table-column>
-          <el-table-column prop="systenUsersName" label="代理人" min-width="120"></el-table-column>
-          <el-table-column prop="address" label="代理人手机" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="" label="可返利时间" min-width="120"></el-table-column>
+          <el-table-column prop="" label="返利金额" min-width="120"></el-table-column>
+          <el-table-column label="代理商" min-width="120"></el-table-column>
+          <el-table-column prop="address" label="代理商手机" min-width="120"></el-table-column>
           <el-table-column label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -558,10 +562,10 @@
           <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
           <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
           <el-table-column prop="examineDate" label="收货日期" min-width="140"></el-table-column>
-          <el-table-column align="center" prop="userName" label="可返利时间" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="返利金额" min-width="120"></el-table-column>
-          <el-table-column prop="systenUsersName" label="代理人" min-width="120"></el-table-column>
-          <el-table-column prop="address" label="代理人手机" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="" label="可返利时间" min-width="120"></el-table-column>
+          <el-table-column prop="" label="返利金额" min-width="120"></el-table-column>
+          <el-table-column prop="" label="代理商" min-width="120"></el-table-column>
+          <el-table-column prop="" label="代理商手机" min-width="120"></el-table-column>
           <el-table-column label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -636,11 +640,7 @@
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
           <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
-          <el-table-column prop="examineDate" label="收货日期" min-width="140"></el-table-column>
-          <el-table-column align="center" prop="userName" label="可返利时间" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="返利金额" min-width="120"></el-table-column>
-          <el-table-column prop="systenUsersName" label="代理人" min-width="120"></el-table-column>
-          <el-table-column prop="address" label="代理人手机" min-width="120"></el-table-column>
+          <el-table-column prop="startDate" label="下单日期" min-width="140"></el-table-column>
           <el-table-column label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -662,6 +662,9 @@
               </el-popover>
             </template>
           </el-table-column>
+          <el-table-column prop="amount" align="center" label="订单金额" min-width="120"></el-table-column>
+          <el-table-column prop="" label="代理人" min-width="120"></el-table-column>
+          <el-table-column prop="" label="代理人手机" min-width="120"></el-table-column>
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
               <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
@@ -748,7 +751,7 @@
         </div>
       </div>
       <div class="l-text-center l-margin-t">
-        <el-button type="primary" @click="expressOk">确定发货</el-button>
+        <el-button type="primary" :loading="expressInfo.loading" @click="expressOk">确定发货</el-button>
       </div>
     </el-dialog>
   </div>
@@ -759,6 +762,7 @@ export default {
   data() {
     return {
       expressInfo: {
+        loading: false,
         orderId: '',
         visible: false,
         payType: {
@@ -811,23 +815,23 @@ export default {
           name: '全部订单'
         },{
           state: '1',
-          cls: 'l-text-error',
+          cls: '',
           name: '待付款'
         },{
           state: '2',
-          cls: 'l-text-ok',
+          cls: 'l-text-hot',
           name: '待审核'
         },{
           state: '3',
-          cls: 'l-text-warn',
+          cls: 'l-text-fuchsia',
           name: '待发货'
         },{
           state: '4',
-          cls: 'l-text-link',
+          cls: '',
           name: '已发货'
         },{
           state: '5',
-          cls: 'l-text-link',
+          cls: '',
           name: '客户已收货'
         },
         {
@@ -972,7 +976,7 @@ export default {
     sltChange(slteds) {
       this.orderList[this.tabIndex].slteds = slteds
     },
-    pageChange(page) {
+    pageChange(page = 1) {
       this.getOrderList(page)
     },
     formatState(state, prop = 'name') {
@@ -1029,7 +1033,7 @@ export default {
       formData.ordersState = tabList.state
       orderList.loading = true
 
-      page = Math.min(page, orderList.total)
+      page = Math.max(Math.min(page, orderList.total), 1)
       this.$api.order.getList(formData, page, orderList.rows).then(({data})=>{
         orderList.total = data.total
         orderList.page = data.page
@@ -1040,19 +1044,23 @@ export default {
       })
     },
     print(orderId = '') { // 打印
-      window.open('/order/print/' + orderId, '_blank')
+      // window.open('/order/print/' + orderId, '_blank', 'location=no, menubar=no, status=no, toolbar=no, titlebar=no')
+      window.open('/order/print/' + orderId)
     },
     express(orderId = ''){
       this.expressInfo.orderId = orderId
-      let expressList = this.$storage.session.get('temp_express_list')
+
+      let expressList = this.$storage.session.get('temp_express_list')  
       if(expressList){
         this.expressInfo.data = expressList
+        this.expressInfo.slted = this.expressInfo.data[0]
         this.expressInfo.visible = true
       }else{
         let loading = this.$loading()
         this.$api.getExpressList().then(({data})=>{
           this.$storage.session.set('temp_express_list', data)
           this.expressInfo.data = data
+          this.expressInfo.slted = this.expressInfo.data[0]
           this.expressInfo.visible = true
         }).finally(()=>{
           loading.close()
@@ -1065,20 +1073,24 @@ export default {
         this.$api.deliverDoods({
           expressId: this.expressInfo.slted.expressId,
           orderId: this.expressInfo.orderId
-        }).then(()=>{
+        }).then(({data})=>{
           this.$message({
             type: 'success',
             message: '发货成功'
           })
           this.expressInfo.visible = false
           this.refreshList()
+
+          window.open(data)
         }).finally(()=>{
           this.expressInfo.loading = false
         })
       }else{
         this.$message('请选择快递')
       }
-      
+    },
+    expressView(url = '') {
+      window.open(url)
     },
     examine(status, orderId) { // 审核
       if(status == undefined){
