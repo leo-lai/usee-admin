@@ -136,6 +136,16 @@ const _api = {
 		getInfo(agentInfoId = '') {
 			return _http.post('/agentInfo', { agentInfoId })
 		}
+	},
+	goods: {
+		getEvaluate(formData = {}, page = 1, rows = 20) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/judgeList', formData)
+		},
+		examineEvaluate(formData = {}) {
+			return _http.post('/judge', formData)
+		}
 	}
 }
 

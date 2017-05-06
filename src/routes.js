@@ -3,6 +3,7 @@ import login            from './views/login.vue'
 import NotFound         from './views/404.vue'
 import index            from './views/index.vue'
 import GoodsList        from './views/shop/goods-list.vue'
+import EvaluateList     from './views/shop/evaluate-list.vue'
 import OrderList        from './views/shop/order-list.vue'
 import OrderPrint       from './views/shop/order-print.vue'
 import AgentList        from './views/agent/agent-list.vue'
@@ -43,7 +44,7 @@ let routes = [{
     children: [
       { path: 'goods',    component: GoodsList, name: '商品管理', hidden:true  },
       { path: 'order',    component: OrderList, name: '订单管理' },
-      { path: 'evaluate', component: Table, name: '商品评价', hidden:true },
+      { path: 'evaluate', component: EvaluateList, name: '商品评价'},
       { path: 'service',  component: Table, name: '售后服务', hidden:true },
     ],
   }, {
