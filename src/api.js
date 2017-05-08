@@ -1,6 +1,6 @@
 import Vue              from 'vue'
 import axios 						from 'axios'
-import { storage }      from 'src/scripts/utils'
+import { utils, storage }      from 'src/scripts/utils'
 
 let _vue = Vue.prototype
 
@@ -151,6 +151,7 @@ const _api = {
 
 Vue.mixin({
   created() {
+  	this.$utils = utils
     // 接口
     this.$api = _api
     // 本地缓存

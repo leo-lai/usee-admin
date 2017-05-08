@@ -57,7 +57,7 @@
       <el-table-column label="操作" min-width="120" align="center">
         <template scope="scope">
           <el-button size="small" type="text" v-if="scope.row.images.length > 0" @click.native.prevent="viewImages(scope.row.images)">查看图片</el-button>
-          <el-button size="small" type="text" @click.native.prevent="examineDialog(scope.row)">审核</el-button>
+          <el-button size="small" type="text" v-if="scope.row.judgegState == 0" @click.native.prevent="examineDialog(scope.row)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -68,7 +68,14 @@
       <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="evaluateList.total">
       </el-pagination>
     </el-col>
-
+    
+    <el-dialog title="系统提示" v-model="examineInfo.visible" size="tiny">
+      <span>是否审核通过该评论?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="examine(0)">不通过</el-button>
+        <el-button type="primary" @click="examine(1)">&ensp;通过&ensp;</el-button>
+      </span>
+    </el-dialog>
 
     <el-dialog title="查看图片" v-model="images.visible" size="full" >
       <el-carousel ref="carousel" arrow="always" :height="images.height" :initial-index="0" :autoplay="false">
@@ -85,6 +92,10 @@
 export default {
   data() {
     return {
+      examineInfo: {
+        slted: {},
+        visible: false,
+      },
       images: {
         height: '800px',
         visible: false,
@@ -151,14 +162,16 @@ export default {
       })
     },
     examineDialog(item) {
-      this.$confirm('是否审核通过该评论?', '系统提示', {
-        confirmButtonText: '通过',
-        cancelButtonText: '不通过'
-      }).then(() => {
-        this.examine(item.judgeId, 1)
-      }).catch(() => {
-        this.examine(item.judgeId, 0)
-      })
+      this.examineInfo.slted = item
+      this.examineInfo.visible = true
+      // this.$confirm('是否审核通过该评论?', '系统提示', {
+      //   confirmButtonText: '通过',
+      //   cancelButtonText: '不通过'
+      // }).then(() => {
+      //   this.examine(item.judgeId, 1)
+      // }).catch(() => {
+      //   this.examine(item.judgeId, 0)
+      // })
     },
     clearFilter() {
       this.$refs.filterForm.resetFields()
@@ -167,16 +180,16 @@ export default {
     refreshList() {
       this.getEvaluateList(this.evaluateList.page)
     },
-    examine(judgeId = '', isPass = 1) {
+    examine(isPass = 1) {
       let loading = this.$loading()
       return this.$api.goods.examineEvaluate({
-        judgeId, isPass
+        judgeId: this.examineInfo.slted.judgeId, isPass
       }).finally(()=>{
         this.$message({
           type: 'success',
           message: '操作成功'
         })
-
+        this.examineInfo.visible = false
         loading.close()
         this.getEvaluateList()
       })
@@ -194,6 +207,7 @@ export default {
       formData.judgegState = this.filter.judgegState
 
       page = Math.max(Math.min(page, this.evaluateList.total), 1)
+      this.evaluateList.loading = true
       this.$api.goods.getEvaluate(formData, page, this.evaluateList.rows).then(({data})=>{
         this.evaluateList.total = data.total
         this.evaluateList.page = data.page

@@ -159,7 +159,7 @@
                 :show-file-list="false" :on-progress="uploadProgress"
                 :on-success="uploadSuccess" :on-error="uploadError" 
                 :before-upload="uploadBefore">
-                <img v-if="agentForm.businessLicenseImage" :src="agentForm.businessLicenseImage" class="avatar">
+                <img v-if="agentForm.businessLicenseImage" :src="$utils.image.thumb(agentForm.businessLicenseImage, 100, 100)" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 <div slot="tip" class="el-upload__tip">
                   <p v-show="uploading" class="l-text-hot"><i class="el-icon-loading"></i>&nbsp;图片上传中...</p>
@@ -167,6 +167,12 @@
                   <p>只能上传jpg/png文件，且不超过2M</p>
                 </div>
               </el-upload>
+            </el-form-item>
+            <el-form-item label="初始库存" prop="goodsStock" >
+              <el-input v-model="agentForm.goodsStock" placeholder="" :disabled="agentInfo.type == 2"></el-input>
+            </el-form-item>
+            <el-form-item label="" >
+              <span class="l-text-error"> 注意：库存一经保存，将不可更改。 </span>
             </el-form-item>
             <el-form-item label="推荐码" prop="recommendAgentCode">
               <el-input v-model="agentForm.recommendAgentCode" placeholder="选填"></el-input>
@@ -238,6 +244,7 @@ export default {
         loading: false
       },
       agentForm: {
+        goodsStock: '',
         agentInfoId: '',
         agentInfoName: '',
         phoneNumber: '',
@@ -259,6 +266,10 @@ export default {
         ],
         businessLicenseImage: [
           { required: true, message: '请上传营业执照', trigger: 'change' }
+        ],
+        goodsStock: [
+          { required: true, message: '请填写初始库存', trigger: 'change' },
+          { pattern: /\d{1,8}/, message: '请正确填写库存', trigger: 'blur' }
         ]
       },
 

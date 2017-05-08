@@ -29,6 +29,14 @@ Array.prototype.find = Array.prototype.find || function(func) {
   }
   return returnArray
 }
+Number.prototype.toMoney = function(places, symbol = '', thousand = ',', decimal = '.') {
+  places = !isNaN(places = Math.abs(places)) ? places : 2
+  var number = this,
+    negative = number < 0 ? '-' : '',
+    i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + '',
+    j = (j = i.length) > 3 ? j % 3 : 0
+  return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '')
+}
 /*
   对Date的扩展，将 Date 转化为指定格式的String * 月(M)、日(d)、12小时(h)、24小时(H)、分(m)、秒(s)、周(E)、季度(q)
   可以用 1-2 个占位符 * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字) 
@@ -68,6 +76,7 @@ const isIpod = /(iPod)(.*OS\s([\d_]+))?/.test(ua)
 const isIphone = !isIpad && /(iPhone\sOS)\s([\d_]+)/.test(ua)
 const isWechat = /micromessenger/i.test(ua)
 const isWeb = !(isAndroid || isIpad || isIpod || isIphone)
+const isIos = isIphone || isIpad || isIpod
 
 function _hasClass(elem, cls) {
   if(!elem || !cls) return false
@@ -200,6 +209,7 @@ export let utils = {
     isIpad,
     isIpod,
     isIphone,
+    isIos,
     isWechat,
     isWeb
   },
@@ -343,7 +353,7 @@ export let utils = {
       return url
     },
     reload(){
-      window.location.reload()
+      window.location.replace(this.setArgs(window.location.href, 't', Date.now()))
     },
     replace(url) {
       window.location.replace(url)
@@ -370,12 +380,17 @@ export let utils = {
     replace() {}
   },
   image: {
-    thumb(src, width, height) {
+    thumb(src = '', width, height) {
       width = width || 320
+
       if(!src){ 
-        return ''
-        return `http://placeholder.qiniudn.com/${width}/ebebeb/cccccc` 
+        return `https://placeholdit.imgix.net/~text?txtsize=20&bg=ffffff&txtclr=999&txt=image&w=${width}&h=${width}` 
       }
+
+      if(src.indexOf('clouddn.com') === -1){
+        return src
+      }
+
       // return src += '?imageMogr2/gravity/Center/crop/'+width+'x'+height;
       src += `?imageMogr2/format/jpg/interlace/1/quality/60/gravity/Center/thumbnail/${width}x`
       if(height){
