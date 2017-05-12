@@ -6,12 +6,9 @@ import GoodsList        from './views/shop/goods-list.vue'
 import EvaluateList     from './views/shop/evaluate-list.vue'
 import OrderList        from './views/shop/order-list.vue'
 import OrderPrint       from './views/shop/order-print.vue'
-import AgentList        from './views/agent/agent-list.vue'
+import afterSales       from './views/shop/after-sales.vue'
 
-import Table            from './views/nav1/Table.vue'
-import form             from './views/nav1/form.vue'
-import user             from './views/nav1/user.vue'
-import echarts          from './views/charts/echarts.vue'
+import AgentList        from './views/agent/agent-list.vue'
 
 let routes = [{
     path: '/login',
@@ -42,10 +39,10 @@ let routes = [{
     name: '商城管理',
     iconCls: 'l-icon-shop',
     children: [
-      { path: 'goods',    component: GoodsList, name: '商品管理', hidden:true  },
-      { path: 'order',    component: OrderList, name: '订单管理' },
-      { path: 'evaluate', component: EvaluateList, name: '商品评价'},
-      { path: 'service',  component: Table, name: '售后服务', hidden:true },
+      { path: 'goods',        component: GoodsList,     name: '商品管理', hidden:true  },
+      { path: 'order',        component: OrderList,     name: '订单管理' },
+      { path: 'evaluate',     component: EvaluateList,  name: '商品评价'},
+      { path: 'aftersales',   component: afterSales,    name: '售后服务' },
     ],
   }, {
     path: '/agent',
@@ -83,9 +80,9 @@ let routes = [{
     name: '基本设置',
     iconCls: 'l-icon-setting',
     children: [
-      { path: 'page13', component: echarts, name: '系统用户' },
-      { path: 'page14', component: echarts, name: '部门设置' },
-      { path: 'page15', component: echarts, name: '角色权限' },
+      { path: 'page13', component: index, name: '系统用户' },
+      { path: 'page14', component: index, name: '部门设置' },
+      { path: 'page15', component: index, name: '角色权限' },
     ],
     hidden: true,
   }, {

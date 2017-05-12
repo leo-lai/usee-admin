@@ -7,6 +7,10 @@
 	width: 100%;
 }
 
+.el-select .el-input {
+  min-width: 120px;
+}
+  
 .fade-enter-active,
 .fade-leave-active {
 	transition: all .2s ease;

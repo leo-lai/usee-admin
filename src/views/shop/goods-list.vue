@@ -124,10 +124,6 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.l-goods{
-  .el-select .el-input {
-    width: 120px;
-  }
-}
+<style scoped lang="scss">
+
 </style>

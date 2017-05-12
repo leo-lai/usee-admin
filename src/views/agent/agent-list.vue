@@ -6,11 +6,11 @@
         <el-row class="l-toolbar">
           <el-col :span="20">
             <el-form ref="filterForm-0" :model="filters[0]" :rules="filterRules" :inline="true">
-              <el-form-item label="加入日期" prop="dateRange">
+              <el-form-item label="筛选时间" prop="dateRange">
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" @blur="search">
+                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" >
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[0].searchType">
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                     <el-option label="合伙人名称" value="agentInfoName"></el-option>
@@ -43,8 +43,8 @@
           <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
           <el-table-column prop="area" label="代理区域" min-width="150"></el-table-column>
           <el-table-column prop="numberOfPeople" label="客户人数" align="center" width="100"></el-table-column>
-          <el-table-column prop="accumulatedIncome" label="累计收益" align="center" width="120"></el-table-column>
-          <el-table-column prop="accountBalance" label="账户余额" align="center" width="120"></el-table-column>
+          <el-table-column prop="accumulatedIncome" label="累计收益(元)" align="center" width="120"></el-table-column>
+          <el-table-column prop="accountBalance" label="账户余额(元)" align="center" width="120"></el-table-column>
           <el-table-column prop="followNumber" label="关联合伙人" align="center" width="120"></el-table-column>
           <el-table-column prop="becomeAgentDate" label="加入日期" min-width="150"></el-table-column>  
           <el-table-column label="订单状态" align="center" min-width="120">
@@ -78,7 +78,7 @@
         <el-row class="l-toolbar">
           <el-col :span="20">
             <el-form ref="filterForm-1" :model="filters[1]" :rules="filterRules" :inline="true">
-              <el-form-item label="加入日期" prop="dateRange">
+              <el-form-item label="筛选时间" prop="dateRange">
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[1].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
@@ -99,6 +99,11 @@
             </el-form>
           </el-col>
           <el-col :span="4" class="l-text-right">
+            <el-form :inline="true">
+              <el-form-item>
+                <el-button type="primary" @click="openXiaoUDialog">新增小U店员</el-button>
+              </el-form-item>
+            </el-form>
           </el-col>
         </el-row>
         
@@ -106,24 +111,27 @@
         <el-table :data="agentList[1].data" highlight-current-row v-loading="agentList[1].loading" @selection-change="sltChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="index" label="#" width="55"></el-table-column>
-          <el-table-column prop="agentInfoName" label="姓名" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="agentInfoName" label="微信昵称" min-width="120"></el-table-column>
           <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
-          <el-table-column prop="numberOfPeople" label="客户人数" align="center" min-width="100"></el-table-column>
-          <el-table-column prop="accumulatedIncome" label="累计收益" align="center" min-width="120"></el-table-column>
-          <el-table-column prop="accountBalance" label="账户余额" align="center" min-width="120"></el-table-column>
-          <el-table-column prop="becomeAgentDate" label="加入日期" min-width="150"></el-table-column>  
-          <!-- <el-table-column label="订单状态" align="center" min-width="120">
+          <el-table-column prop="numberOfPeople" label="客户人数" min-width="120"></el-table-column>
+          <el-table-column prop="accumulatedIncome" label="累计收益(元)" min-width="120"></el-table-column>
+          <el-table-column prop="accumulatedIncome" label="累计销售(套)" min-width="120"></el-table-column>
+          <el-table-column prop="accountBalance" label="账户余额(元)" min-width="120"></el-table-column>
+          <el-table-column prop="becomeAgentDate" label="成为小U时间" min-width="120"></el-table-column>  
+          <el-table-column label="状态" align="center" min-width="120">
             <template scope="scope">
-              <span class="l-text-error" v-if="scope.row.isFrozen">账户冻结</span>
+              <span class="l-text-error" v-if="scope.row.isFrozen">已取消小U资格</span>
               <span class="l-text-ok" v-else>正常使用</span>
             </template>
           </el-table-column>
+          <!-- 
           <el-table-column label="操作" min-width="150" align="center">
             <template scope="scope">
               <el-button size="small" type="text" @click="editAgentInfo(scope.row.agentInfoId)">编辑</el-button>
               <el-button size="small">查看二维码</el-button>
             </template>
-          </el-table-column> -->
+          </el-table-column> 
+          -->
         </el-table>
         <!--列表 end-->
 
@@ -140,7 +148,7 @@
       </el-tab-pane>
     </el-tabs>
     <!--合伙人信息-->
-    <el-dialog title="合伙人信息" ref="agentDialog" custom-class="l-dialog" @close="closeAgentDialog" :close-on-click-modal="false" v-model="agentInfo.visible">
+    <el-dialog title="合伙人信息" ref="agentDialog" custom-class="l-dialog" :before-close="closeAgentDialog" :close-on-click-modal="false" :visible.sync="agentInfo.visible">
       <el-tabs v-model="agentInfo.tabIndex">
         <el-tab-pane label="基本信息">
           <el-form ref="agentForm" :model="agentForm" :rules="agentRules" :inline="true" class="l-agent-info" label-width="100px">
@@ -209,7 +217,7 @@
       </el-tabs>
     </el-dialog>
     <!-- 代理区域 -->
-    <el-dialog v-model="agentInfoArea.visible" size="tiny" :close-on-click-modal="false">
+    <el-dialog :visible.sync="agentInfoArea.visible" size="tiny" :close-on-click-modal="false">
       <el-form :inline="true" label-width="80px">
         <el-form-item label="代理区域">
           <el-cascader placeholder="请选择代理区域" v-model="cityDataSlted" :options="cityData" :props="{label: 'text'}" filterable ></el-cascader>
@@ -220,8 +228,41 @@
       </el-form>
     </el-dialog>
     <!-- 图片预览 -->
-    <el-dialog v-model="agentInfo.preview" size="tiny">
+    <el-dialog :visible.sync="agentInfo.preview" size="tiny">
       <img width="100%" :src="agentForm.businessLicenseImage" alt="">
+    </el-dialog>
+    <!-- 新增小U店员 -->
+    <el-dialog title="新增小U店员" custom-class="l-dialog" :visible.sync="xiaoUInfo.visible" size="tiny">
+      <el-row type="flex" :gutter="10" align="middle">
+        <el-col :span="4">手机号码</el-col>
+        <el-col :span="14">
+          <el-input v-model="xiaoUForm.phoneNumber" :maxlength="11" placeholder="请输入手机号码"></el-input>  
+        </el-col>
+        <el-col :span="6"><el-button @click="getXiaoU" :loading="xiaoUInfo.loading">查询用户</el-button></el-col>
+      </el-row>
+      <el-row type="flex" :gutter="10" align="middle" class="l-margin-tb-m">
+        <el-col :span="4">微信昵称</el-col>
+        <el-col :span="14">{{xiaoUInfo.data.userName}}</el-col>
+        <el-col :span="6"></el-col>
+      </el-row>
+      <el-row type="flex" :gutter="10" align="middle">
+        <el-col :span="4">用户姓名</el-col>
+        <el-col :span="14">
+          <el-input v-model="xiaoUForm.agentInfoName" placeholder="请填写用户姓名"></el-input>  
+        </el-col>
+        <el-col :span="6"></el-col>
+      </el-row>
+      <el-row type="flex" align="middle" class="l-margin-tb-m">
+        <el-col :span="24">最高一次购买明目舒眼水套数：{{xiaoUInfo.data.maxGoodsNumber}}</el-col>
+      </el-row>
+      <el-row type="flex" align="middle" class="l-margin-tb-m">
+        <el-col :span="24">累计购买明目舒眼水套数：{{xiaoUInfo.data.sunGoodsNumber}}</el-col>
+      </el-row>
+      <el-row type="flex" justify="center" class="l-margin-t">
+        <el-col :span="24" class="l-text-center">
+          <el-button type="primary" :loading="xiaoUInfo.submiting" @click="changeXiaoU">升级为小U店员</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
   </div>
 </template>
@@ -235,6 +276,21 @@ export default {
       cityDataSlted: [],
 
       uploading: false,
+
+      xiaoUInfo: {
+        visible: false,
+        loading: false,
+        submiting: false,
+        data: {
+          userName: '',
+          maxGoodsNumber: '',
+          sunGoodsNumber: ''
+        }
+      },
+      xiaoUForm: {
+        phoneNumber: '',
+        agentInfoName: ''
+      },
       agentInfo: {
         type: 1,
         tabIndex: '0',
@@ -462,13 +518,50 @@ export default {
       this.agentInfo.visible = true
       this.agentInfo.tabIndex = '0'
     },
-    closeAgentDialog(){
-      this.agentInfo.visible = false
-      this.agentInfoAreas = []
-      this.resetAgentForm()
-      if(this.agentInfo.submited){
-        this.getAgentList(this.agentList[this.tabIndex].page)
+    closeAgentDialog(done){
+      if(this.agentForm.agentInfoId && this.agentInfoAreas.length === 0){
+        this.agentInfo.tabIndex = '1'
+        this.$message('请添加代理区域')
+      }else{
+        done()
+        this.agentInfo.visible = false
+        this.agentInfoAreas = []
+        this.resetAgentForm()
+        if(this.agentInfo.submited){
+          this.getAgentList(this.agentList[this.tabIndex].page)
+        }
       }
+    },
+    openXiaoUDialog() {
+      this.xiaoUInfo.visible = true
+    },
+    getXiaoU() {
+      this.resetXiaoUForm()
+      this.xiaoUInfo.loading = true
+      this.$api.agent.getUserInfo(this.xiaoUForm.phoneNumber).then(({data})=>{
+        Object.assign(this.xiaoUInfo.data, data)
+      }).finally(()=>{
+        this.xiaoUInfo.loading = false
+      })
+    },
+    changeXiaoU() {
+      this.xiaoUInfo.submiting = true
+      this.$api.agent.changeXiaoU(this.xiaoUForm).then(({data})=>{
+        this.$message({
+          type: 'success',
+          message: '升级小U店员成功'
+        })
+        this.xiaoUForm.phoneNumber = ''
+        this.resetXiaoUForm()
+      }).finally(()=>{
+        this.xiaoUInfo.submiting = false
+      })
+    },
+    resetXiaoUForm(){
+      this.xiaoUForm.agentInfoName = ''
+      this.xiaoUInfo.data.userName = ''
+      this.xiaoUInfo.data.maxGoodsNumber = ''
+      this.xiaoUInfo.data.sunGoodsNumber = ''
     },
     resetAgentForm() {
       this.agentForm.agentInfoId = ''
@@ -531,7 +624,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .avatar-uploader .el-upload{
   cursor: pointer;
   position: relative;
@@ -558,8 +651,7 @@ export default {
   text-align: center;
   vertical-align: middle;
 }
-</style>
-<style lang="scss">
+
 .l-agent-list{
   border: 1px solid #dfe6ec; border-collapse:collapse; width: 700px; margin: 20px 50px;
   th,td{ border-bottom: 1px solid #dfe6ec; padding: 10px 20px; text-align: left;}
@@ -574,11 +666,6 @@ export default {
   .el-form-item__content{
     width: 498px;
     max-width: 100%;
-  }
-}
-.l-agent{
-  .el-select .el-input {
-    width: 120px;
   }
 }
 </style>

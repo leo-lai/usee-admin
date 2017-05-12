@@ -65,7 +65,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped media="print">
+<style scoped lang="scss" media="print">
 .l-print{
 	width: 1000px; margin: 30px auto;
 	p{margin: 5px 0;}

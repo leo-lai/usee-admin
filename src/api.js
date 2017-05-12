@@ -119,6 +119,14 @@ const _api = {
 		},
 		express(orderId) {
 
+		},
+		getAfterSales(formData = {}, page = 1, rows = 20) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/afterSalesList', formData)
+		},
+		examineAfterSales(afterSalesId, status = '', refuseRemark = '') {
+			return _http.post('/afterSalesexamine', { afterSalesId, isPass: status, refuseRemark })
 		}
 	},
 	agent: {
@@ -135,6 +143,12 @@ const _api = {
 		},
 		getInfo(agentInfoId = '') {
 			return _http.post('/agentInfo', { agentInfoId })
+		},
+		getUserInfo(phoneNumber = '') {
+			return _http.post('/checkGetReadyAgent', { phoneNumber })
+		},
+		changeXiaoU(formData = {}) {
+			return _http.post('/agentUAddOrEdit', formData)
 		}
 	},
 	goods: {
