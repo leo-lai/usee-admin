@@ -9,8 +9,9 @@
               <el-button :disabled="evaluateList.slteds.length===0">批量通过</el-button>
             </el-button-group>  
           </el-form-item> -->
-          <el-form-item>
+          <el-form-item label="审核状态">
             <el-select placeholder="审核状态" v-model="filter.judgegState" @change="getEvaluateList(1)">
+              <el-option label="全部" value=""></el-option>
               <el-option label="未审核" value="0"></el-option>
               <el-option label="审核通过" value="1"></el-option>
               <el-option label="审核不通过" value="2"></el-option>

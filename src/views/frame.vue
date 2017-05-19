@@ -11,7 +11,7 @@
 			</el-col>
 			<el-col :span="9">
 				<el-menu :default-active="$route.path" mode="horizontal" class="l-nav-top">
-				  <el-menu-item index="/" @click="$router.push('/')">首页</el-menu-item>
+				  <el-menu-item index="/index" @click="$router.push('/index')">首页</el-menu-item>
 				</el-menu>
 			</el-col>
 			<el-col :span="4" class="userinfo">
@@ -58,7 +58,7 @@
 				</ul>
 			</aside>
 			<section class="content-container">
-				<el-col :span="24" class="breadcrumb-container" v-show="$route.path !== '/'">
+				<el-col :span="24" class="breadcrumb-container" v-show="$route.path !== '/index'">
 					<el-breadcrumb separator="›">
 						<el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
 							{{ item.name }}
@@ -247,7 +247,8 @@ export default {
 			// top: 0px;
 			// bottom: 0px;
 			// left: 230px;
-			overflow-y: scroll;
+			position: relative;
+			overflow-y: auto;
 			padding: 20px;
 			.breadcrumb-container {
 				//margin-bottom: 15px;

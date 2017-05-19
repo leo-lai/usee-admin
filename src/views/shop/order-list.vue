@@ -607,7 +607,7 @@
       </div>
     </div>
     <!--订单详情-->
-    <el-dialog title="订单详情" custom-class="l-dialog l-order-info" v-model="orderInfo.visible" >
+    <el-dialog title="订单详情" custom-class="l-dialog l-order-info" :visible.sync="orderInfo.visible" >
       <div class="l-panel l-margin-b">
         <div class="l-panel-tit">基本信息</div>
         <div class="l-panel-cont">
@@ -661,7 +661,7 @@
     </el-dialog>
 
     <!-- 快递列表 -->
-    <el-dialog title="选择快递" custom-class="l-dialog" v-model="expressInfo.visible" size="tiny">
+    <el-dialog title="选择快递" custom-class="l-dialog" :visible.sync="expressInfo.visible" size="tiny">
       <div class="l-express-list">
         <div class="_item" v-for="item in expressInfo.data" 
           :class="{'_active': expressInfo.slted.expressId === item.expressId}" 
@@ -975,22 +975,14 @@ export default {
     express(orderId = ''){
       this.expressInfo.orderId = orderId
 
-      let expressList = this.$storage.session.get('temp_express_list')  
-      if(expressList){
-        this.expressInfo.data = expressList
+      let loading = this.$loading()
+      this.$api.getExpressList().then(({data})=>{
+        this.expressInfo.data = data
         this.expressInfo.slted = this.expressInfo.data[0]
         this.expressInfo.visible = true
-      }else{
-        let loading = this.$loading()
-        this.$api.getExpressList().then(({data})=>{
-          this.$storage.session.set('temp_express_list', data)
-          this.expressInfo.data = data
-          this.expressInfo.slted = this.expressInfo.data[0]
-          this.expressInfo.visible = true
-        }).finally(()=>{
-          loading.close()
-        })
-      }
+      }).finally(()=>{
+        loading.close()
+      })
     },
     expressOk() {
       if(this.expressInfo.slted && this.expressInfo.slted.expressId){
@@ -1049,31 +1041,6 @@ export default {
 </script>
 <style scoped lang="scss">
 @import '~scss_vars';
-.l-express-list{
-  overflow-x: hidden; margin: -15px 0 0 -15px;
-  ._item{
-    border:1px solid #ddd; padding: 15px; float: left; min-width: 133px;
-    margin: 15px 0 0 15px; cursor: pointer;
-  }
-  h3, p{margin: 10px 0;}
-  ._item:hover{
-    border-color: $color-primary;    
-  }
-  ._active{
-    position: relative;
-    border: 1px solid $color-primary;
-    overflow: hidden;
-  }
-  ._active:after{
-    content: '\E667';
-    font-family: 'l-iconfont';
-    position: absolute;
-    bottom: -7px;
-    right: -3px;
-    color: $color-primary;
-    font-size: 1.6rem;
-  }
-}
 .l-order{
   .l-date{
     width: 350px;

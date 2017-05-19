@@ -76,6 +76,8 @@
         <template scope="scope">
           <el-button size="small" type="text" v-if="scope.row.images.length > 0" @click.native.prevent="viewImages(scope.row.images)">查看图片</el-button>
           <el-button size="small" type="text" v-if="scope.row.afterSalesState == 0" @click.native.prevent="examineDialog(scope.row)">审核</el-button>
+          <el-button size="small" type="text" v-if="scope.row.afterSalesState == 1 && !scope.row.isExpress" @click.native.prevent="express(scope.row.afterSalesId)">发货</el-button>
+          <el-button size="small" type="text" v-if="scope.row.isExpress" @click.native.prevent="expressView(scope.row.expressURL)">查看快递单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -87,7 +89,7 @@
       </el-pagination>
     </el-col>
     
-    <el-dialog custom-class="l-dialog" title="系统提示" v-model="examineInfo.visible" size="tiny">
+    <el-dialog custom-class="l-dialog" title="系统提示" :visible.sync="examineInfo.visible" size="tiny">
       <p class="l-margin-b-s">是否审核通过该售后申请?</p>
       <el-input type="textarea" :rows="2" placeholder="如果拒绝申请，请填写原因" v-model="examineInfo.reason">
       </el-input>
@@ -97,12 +99,27 @@
       </span>
     </el-dialog>
 
-    <el-dialog custom-class="l-dialog" title="查看图片" v-model="images.visible" size="full" >
+    <el-dialog custom-class="l-dialog" title="查看图片" :visible.sync="images.visible" size="full" >
       <el-carousel ref="carousel" arrow="always" :height="images.height" :initial-index="0" :autoplay="false">
         <el-carousel-item v-for="item in images.data" >
           <img :src="item" alt="">
         </el-carousel-item>
       </el-carousel>
+    </el-dialog>
+
+    <!-- 快递列表 -->
+    <el-dialog title="选择快递" custom-class="l-dialog" :visible.sync="expressInfo.visible" size="tiny">
+      <div class="l-express-list">
+        <div class="_item" v-for="item in expressInfo.data" 
+          :class="{'_active': expressInfo.slted.expressId === item.expressId}" 
+          @click="expressInfo.slted = item">
+          <h3>{{item.expressName}}</h3>
+          <p>{{expressInfo.payType[item.payType]}}</p>
+        </div>
+      </div>
+      <div class="l-text-center l-margin-t">
+        <el-button type="primary" :loading="expressInfo.loading" @click="expressOk">确定发货</el-button>
+      </div>
     </el-dialog>
 
   </div>
@@ -112,6 +129,19 @@
 export default {
   data() {
     return {
+      expressInfo: {
+        loading: false,
+        afterSalesId: '',
+        visible: false,
+        payType: {
+          'SHIPPER': '寄方付',
+          'CONSIGNEE': '到付',
+          'MONTHLY': '月结',
+          'THIRDPARTY': '第三方支付'
+        },
+        slted: {},
+        data: []
+      },
       filter: {
         searchKey: '',
         searchType: 'goodsName',
@@ -211,6 +241,43 @@ export default {
       }).finally(()=>{
         loading.close()
       })
+    },
+    express(afterSalesId = ''){
+      this.expressInfo.afterSalesId = afterSalesId
+      
+      let loading = this.$loading()
+      this.$api.getExpressList().then(({data})=>{
+        this.expressInfo.data = data
+        this.expressInfo.slted = this.expressInfo.data[0]
+        this.expressInfo.visible = true
+      }).finally(()=>{
+        loading.close()
+      })
+    },
+    expressOk() {
+      if(this.expressInfo.slted && this.expressInfo.slted.expressId){
+        this.expressInfo.loading = true
+        this.$api.order.expressAfterSales({
+          expressId: this.expressInfo.slted.expressId,
+          afterSalesId: this.expressInfo.afterSalesId
+        }).then(({data})=>{
+          this.$message({
+            type: 'success',
+            message: '发货成功'
+          })
+          this.expressInfo.visible = false
+          this.refreshList()
+
+          window.open(data)
+        }).finally(()=>{
+          this.expressInfo.loading = false
+        })
+      }else{
+        this.$message('请选择快递')
+      }
+    },
+    expressView(url = '') {
+      window.open(url)
     },
     clearFilter() {
       this.$refs.filterForm.resetFields()

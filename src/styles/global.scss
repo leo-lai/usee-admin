@@ -72,3 +72,29 @@
 
 .l-loading-body,
 .el-loading-mask.is-fullscreen{background-color: rgba(0,0,0,0.05);}
+
+.l-express-list{
+  overflow-x: hidden; margin: -15px 0 0 -15px;
+  ._item{
+    border:1px solid #ddd; padding: 15px; float: left; min-width: 133px;
+    margin: 15px 0 0 15px; cursor: pointer;
+  }
+  h3, p{margin: 10px 0;}
+  ._item:hover{
+    border-color: $color-primary;    
+  }
+  ._active{
+    position: relative;
+    border: 1px solid $color-primary;
+    overflow: hidden;
+  }
+  ._active:after{
+    content: '\E667';
+    font-family: 'l-iconfont';
+    position: absolute;
+    bottom: -7px;
+    right: -3px;
+    color: $color-primary;
+    font-size: 1.6rem;
+  }
+}

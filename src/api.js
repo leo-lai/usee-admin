@@ -90,9 +90,17 @@ const _api = {
 		return !!storage.local.get('sessionId')
 	},
 	getExpressList() {
-		return _http.post('/expressList').then((reponse)=>{
-			reponse.data = reponse.data || []
-			return reponse
+		return new Promise((resolve, reject)=>{
+			let expressList = storage.session.get('temp_express_list')
+			if(expressList && expressList.length > 0){
+				resolve({data: expressList})
+			}else{
+				_http.post('/expressList').then((reponse)=>{
+					reponse.data = reponse.data || []
+					storage.session.set('temp_express_list', reponse.data)
+					resolve(reponse)
+				})
+			}
 		})
 	},
 	deliverDoods(formData) {
@@ -117,8 +125,8 @@ const _api = {
 		examine(orderIds, status = '') {
 			return _http.post('/toExamine', { orderIds, isPass: status })
 		},
-		express(orderId) {
-
+		expressAfterSales(formData) {
+			return _http.post('/afterSalesSend', formData)
 		},
 		getAfterSales(formData = {}, page = 1, rows = 20) {
 			formData.page = page
@@ -135,6 +143,22 @@ const _api = {
 			formData.rows = rows
 			return _http.post('/agentList', formData)
 		},
+		getRebateList(formData = {}, page = 1, rows = 20){
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/rebateRecordList', formData)
+		},
+		examineRebate(rebateRecordIds = '', status = '', refuseRemark = '') {
+			return _http.post('/examineRebate', { rebateRecordIds, isPass: status, refuseRemark })
+		},
+		getWithdrawalsList(formData = {}, page = 1, rows = 20){
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/withdrawalsList', formData)
+		},
+		examineWithdrawals(withdrawalsIds, status = '', refuseRemark = '') {
+			return _http.post('/examineWithdrawals', { withdrawalsIds, isPass: status, refuseRemark })
+		},
 		addOrEdit(formData = {}) {
 			return _http.post('/agentAddOrEdit', formData)
 		},
@@ -149,6 +173,9 @@ const _api = {
 		},
 		changeXiaoU(formData = {}) {
 			return _http.post('/agentUAddOrEdit', formData)
+		},
+		examineRebateH(rebateRecordIds = '', remark = '') {
+			return _http.post('/examineRebate_H', { rebateRecordIds, remark })
 		}
 	},
 	goods: {
