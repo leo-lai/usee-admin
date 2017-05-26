@@ -10,7 +10,7 @@
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" >
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[0].searchKey">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[0].searchType">
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                     <el-option label="合伙人名称" value="agentInfoName"></el-option>
@@ -22,7 +22,7 @@
                 <el-button-group>
                   <el-button @click="clearFilter">清除过滤</el-button>
                   <el-button @click="refreshList">刷新列表</el-button>
-                </el-button-group>  
+                </el-button-group>
               </el-form-item>
             </el-form>
           </el-col>
@@ -34,7 +34,6 @@
             </el-form>
           </el-col>
         </el-row>
-        
         <!--列表-->
         <el-table :data="agentList[0].data" highlight-current-row v-loading="agentList[0].loading" @selection-change="sltChange">
           <el-table-column type="selection" width="55"></el-table-column>
@@ -42,11 +41,11 @@
           <el-table-column prop="agentInfoName" label="姓名" min-width="120"></el-table-column>
           <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
           <el-table-column prop="area" label="代理区域" min-width="150"></el-table-column>
-          <el-table-column prop="numberOfPeople" label="客户人数" align="center" width="100"></el-table-column>
-          <el-table-column prop="accumulatedIncome" label="累计收益(元)" align="center" width="120"></el-table-column>
-          <el-table-column prop="accountBalance" label="账户余额(元)" align="center" width="120"></el-table-column>
-          <el-table-column prop="followNumber" label="关联合伙人" align="center" width="120"></el-table-column>
-          <el-table-column prop="becomeAgentDate" label="加入日期" min-width="150"></el-table-column>  
+          <el-table-column prop="numberOfPeople" label="客户人数" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="accumulatedIncome" label="累计收益(元)" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="accountBalance" label="账户余额(元)" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="followNumber" label="关联合伙人" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="becomeAgentDate" label="加入日期" min-width="160"></el-table-column>
           <el-table-column label="订单状态" align="center" min-width="120">
             <template scope="scope">
               <span class="l-text-error" v-if="scope.row.isFrozen">账户冻结</span>
@@ -56,14 +55,14 @@
           <el-table-column label="操作" min-width="150" align="center">
             <template scope="scope">
               <el-button size="small" type="text" @click="editAgentInfo(scope.row.agentInfoId)">编辑</el-button>
+              <el-button size="small" type="text" @click="stockAdmin(scope.row.agentInfoId)">库存管理</el-button>
               <!-- <el-button size="small">查看二维码</el-button> -->
             </template>
           </el-table-column>
         </el-table>
         <!--列表 end-->
-
         <!--分页-->
-        <el-row class="l-toolbar"  type="flex" align="middle">
+        <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
             <span class="l-text-gray">共{{agentList[0].total}}条记录</span>
           </el-col>
@@ -82,7 +81,7 @@
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[1].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[1].searchKey" @blur="search">
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[1].searchKey" @blur="search">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[1].searchType">
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                     <el-option label="合伙人名称" value="agentInfoName"></el-option>
@@ -94,30 +93,29 @@
                 <el-button-group>
                   <el-button @click="clearFilter">清除过滤</el-button>
                   <el-button @click="refreshList">刷新列表</el-button>
-                </el-button-group>  
+                </el-button-group>
               </el-form-item>
             </el-form>
           </el-col>
           <el-col :span="4" class="l-text-right">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" @click="openXiaoUDialog">新增小U店员</el-button>
+                <el-button type="primary" @click="xiaoUInfo.visible = true">新增小U店员</el-button>
               </el-form-item>
             </el-form>
           </el-col>
         </el-row>
-        
         <!--列表-->
         <el-table :data="agentList[1].data" highlight-current-row v-loading="agentList[1].loading" @selection-change="sltChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="index" label="#" width="55"></el-table-column>
           <el-table-column prop="agentInfoName" label="微信昵称" min-width="120"></el-table-column>
           <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
-          <el-table-column prop="numberOfPeople" label="客户人数" min-width="120"></el-table-column>
-          <el-table-column prop="accumulatedIncome" label="累计收益(元)" min-width="120"></el-table-column>
-          <el-table-column prop="accumulatedIncome" label="累计销售(套)" min-width="120"></el-table-column>
-          <el-table-column prop="accountBalance" label="账户余额(元)" min-width="120"></el-table-column>
-          <el-table-column prop="becomeAgentDate" label="成为小U时间" min-width="120"></el-table-column>  
+          <el-table-column prop="numberOfPeople" label="客户人数" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="accumulatedIncome" label="累计收益(元)" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="accumulatedIncome" label="累计销售(套)" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="accountBalance" label="账户余额(元)" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="becomeAgentDate" label="成为小U时间" min-width="120"></el-table-column>
           <el-table-column label="状态" align="center" min-width="120">
             <template scope="scope">
               <span class="l-text-error" v-if="scope.row.isFrozen">已取消小U资格</span>
@@ -134,9 +132,8 @@
           -->
         </el-table>
         <!--列表 end-->
-
         <!--分页-->
-        <el-row class="l-toolbar"  type="flex" align="middle">
+        <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
             <span class="l-text-gray">共{{agentList[1].total}}条记录</span>
           </el-col>
@@ -162,24 +159,22 @@
               <el-input v-model="agentForm.agentCompany"></el-input>
             </el-form-item>
             <el-form-item label="营业执照" prop="businessLicenseImage">
-              <el-upload ref="agentUpload" name="img_file" class="avatar-uploader"
-                :action="$api.baseUrl + '/uploadImage'"
-                :show-file-list="false" :on-progress="uploadProgress"
-                :on-success="uploadSuccess" :on-error="uploadError" 
-                :before-upload="uploadBefore">
+              <el-upload ref="agentUpload" name="img_file" class="avatar-uploader" :action="$api.baseUrl + '/uploadImage'" :show-file-list="false" :on-progress="uploadProgress" :on-success="uploadSuccess" :on-error="uploadError" :before-upload="uploadBefore">
                 <img v-if="agentForm.businessLicenseImage" :src="$utils.image.thumb(agentForm.businessLicenseImage, 100, 100)" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 <div slot="tip" class="el-upload__tip">
                   <p v-show="uploading" class="l-text-hot"><i class="el-icon-loading"></i>&nbsp;图片上传中...</p>
-                  <p><el-button v-if="agentForm.businessLicenseImage" @click="agentInfo.preview = true" type="text">查看大图</el-button></p>
+                  <p>
+                    <el-button v-if="agentForm.businessLicenseImage" @click="agentInfo.preview = true" type="text">查看大图</el-button>
+                  </p>
                   <p>只能上传jpg/png文件，且不超过2M</p>
                 </div>
               </el-upload>
             </el-form-item>
-            <el-form-item label="初始库存" prop="goodsStock" >
+            <el-form-item label="初始库存" prop="goodsStock">
               <el-input v-model="agentForm.goodsStock" placeholder="" :disabled="agentInfo.type == 2"></el-input>
             </el-form-item>
-            <el-form-item label="" >
+            <el-form-item label="">
               <span class="l-text-error"> 注意：库存一经保存，将不可更改。 </span>
             </el-form-item>
             <el-form-item label="推荐码" prop="recommendAgentCode">
@@ -192,7 +187,6 @@
               <el-button type="primary" @click.native.prevent="submitAgentForm('agentForm')" :loading="agentInfo.submiting">
                 &nbsp;&nbsp;保存信息&nbsp;&nbsp;
               </el-button>
-              
               <!-- <el-button class="l-margin-l" @click.native.prevent="resetAgentForm('agentForm')">
                 &nbsp;&nbsp;重置&nbsp;&nbsp;
               </el-button> -->
@@ -210,7 +204,9 @@
               <td>{{item.province + (item.city === item.province ? '' : item.city) + item.area}}</td>
             </tr>
             <tr>
-              <td colspan="2" class="l-text-center"><el-button type="primary" @click="addAgentArea">添加代理区域</el-button></td>
+              <td colspan="2" class="l-text-center">
+                <el-button type="primary" @click="addAgentArea">添加代理区域</el-button>
+              </td>
             </tr>
           </table>
         </el-tab-pane>
@@ -220,7 +216,7 @@
     <el-dialog :visible.sync="agentInfoArea.visible" size="tiny" :close-on-click-modal="false">
       <el-form :inline="true" label-width="80px">
         <el-form-item label="代理区域">
-          <el-cascader placeholder="请选择代理区域" v-model="cityDataSlted" :options="cityData" :props="{label: 'text'}" filterable ></el-cascader>
+          <el-cascader placeholder="请选择代理区域" v-model="cityDataSlted" :options="cityData" :props="{label: 'text'}"></el-cascader>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" :loading="agentInfoArea.loading" @click="saveAgentArea">保存</el-button>
@@ -236,9 +232,11 @@
       <el-row type="flex" :gutter="10" align="middle">
         <el-col :span="4">手机号码</el-col>
         <el-col :span="14">
-          <el-input v-model="xiaoUForm.phoneNumber" :maxlength="11" placeholder="请输入手机号码"></el-input>  
+          <el-input v-model="xiaoUForm.phoneNumber" :maxlength="11" placeholder="请输入手机号码"></el-input>
         </el-col>
-        <el-col :span="6"><el-button @click="getXiaoU" :loading="xiaoUInfo.loading">查询用户</el-button></el-col>
+        <el-col :span="6">
+          <el-button @click="getXiaoU" :loading="xiaoUInfo.loading">查询用户</el-button>
+        </el-col>
       </el-row>
       <el-row type="flex" :gutter="10" align="middle" class="l-margin-tb-m">
         <el-col :span="4">微信昵称</el-col>
@@ -248,7 +246,7 @@
       <el-row type="flex" :gutter="10" align="middle">
         <el-col :span="4">用户姓名</el-col>
         <el-col :span="14">
-          <el-input v-model="xiaoUForm.agentInfoName" placeholder="请填写用户姓名"></el-input>  
+          <el-input v-model="xiaoUForm.agentInfoName" placeholder="请填写用户姓名"></el-input>
         </el-col>
         <el-col :span="6"></el-col>
       </el-row>
@@ -264,13 +262,98 @@
         </el-col>
       </el-row>
     </el-dialog>
+    <!-- 库存信息 -->
+    <el-dialog title="合伙人库存" custom-class="l-dialog" :visible.sync="agentGoods.visible" size="tiny">
+      <el-table :data="agentGoods.data" :loading="agentGoods.loading">
+        <el-table-column prop="goodsName" label="商品名称" min-width="120"></el-table-column>
+        <el-table-column prop="goodsStock" label="剩余库存" min-width="120" align="center"></el-table-column>
+        <el-table-column label="操作" min-width="120" align="center">
+          <template scope="scope">
+            <el-button type="primary" size="small" @click="deliveryGoodsDialog(scope.row)">提货</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <!-- 提货信息 -->
+    <el-dialog title="合伙人提货" custom-class="l-dialog" :visible.sync="deliveryGoods.visible" size="tiny" :close-on-click-modal="false">
+      <el-form :model="deliveryGoods.form" :rules="deliveryGoods.rules" ref="deliveryGoodsForm" label-width="100px" style="width:90%;">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="提货商品">{{deliveryGoods.info.goodsName}}</el-form-item>
+          </el-col>  
+          <el-col :span="12">
+            <el-form-item label="当前库存">{{deliveryGoods.info.goodsStock}}</el-form-item>
+          </el-col>  
+        </el-row>
+        <el-form-item label="选择规格" prop="colorTypeId">
+          <el-radio-group v-model="deliveryGoods.form.colorTypeId">
+            <el-radio :label="item.colorId" v-for="item in deliveryGoods.info.colour" :key="item.colorId">{{item.colorName}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="提货数量" prop="goodsNumber">
+          <el-input v-model="deliveryGoods.form.goodsNumber" :maxlength="7" placeholder="不能大于当前库存" style="width:auto;"></el-input>
+        </el-form-item>
+        <el-form-item label="收货人" prop="userName">
+          <el-input v-model="deliveryGoods.form.userName" :maxlength="50" style="width:auto;" placeholder="收货人姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式" prop="phoneNumber">
+          <el-input v-model="deliveryGoods.form.phoneNumber" :maxlength="15" style="width:auto;" placeholder="请输入常用联系方式"></el-input>
+        </el-form-item>
+        <el-form-item label="收货地址" class="l-input-block" prop="address">
+          <el-row>
+            <el-cascader style="width:100%;" placeholder="请选择收货区域" 
+              v-model="deliveryGoods.citySlted" :options="cityData" :props="{label: 'text', value: 'text'}"></el-cascader>
+          </el-row>
+          <el-row class="l-margin-t-s">
+            <el-input placeholder="请输入详细地址(不需要填写省市区)" v-model="deliveryGoods.address" :maxlength="100"></el-input>  
+          </el-row>
+        </el-form-item>
+        <el-form-item label="邮寄方式" prop="expressId">
+          <el-select v-model="deliveryGoods.form.expressId" placeholder="请选择邮寄方式">
+            <el-option v-for="item in deliveryGoods.info.express" :key="item.expressId" 
+              :value="item.expressId" :label="item.expressName + '('+expressPayType[item.payType]+')'"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="提货备注" prop="remark">
+          <el-input type="textarea" v-model="deliveryGoods.form.remark" :maxlength="500" placeholder="选填"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="deliveryGoods.visible = false">取消</el-button>
+          <el-button type="primary" :loading="deliveryGoods.submiting" @click="deliveryGoodsSubmit">确定提货</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
-
 <script>
 import cityData from 'src/scripts/city.data'
 export default {
   data() {
+     let validateGoodsNumber = (rule, value, callback) => {
+      let number = Number(value)
+      if (value === '') {
+        callback(new Error('请输入提货数量'))
+      } else if(Number.isNaN(number) || !/^\d+$/.test(number)){
+        callback(new Error('请输入正确的数量'))
+      } else if( number > this.deliveryGoods.info.goodsStock ) {
+        callback(new Error('提货数量不能大于当前库存'))
+      }else{
+        callback()
+      }
+    }
+
+    let validateAddress = (rule, value, callback) => {
+      let number = Number(value)
+      if (this.deliveryGoods.citySlted.length === 0) {
+        callback(new Error('请选择收货区域'))
+      } else if(!this.deliveryGoods.address){
+        callback(new Error('请输入详细地址'))
+      }else{
+        this.deliveryGoods.form.address = this.deliveryGoods.citySlted.join('') + this.deliveryGoods.address
+        callback()
+      }
+    }
+
     return {
       cityData,
       cityDataSlted: [],
@@ -291,6 +374,69 @@ export default {
         phoneNumber: '',
         agentInfoName: ''
       },
+
+      expressPayType: {
+        'SHIPPER': '寄方付',
+        'CONSIGNEE': '到付',
+        'MONTHLY': '月结',
+        'THIRDPARTY': '第三方支付',
+        'ZITI': '不发快递'
+      },
+      deliveryGoods: {
+        visible: false,
+        submiting: false,
+        citySlted: [],
+        address: '',
+        info: {},
+        rules: {
+          colorTypeId: [{
+            required: true,
+            type: 'number',
+            trigger: 'change'
+          }],
+          userName: [{
+            required: true,
+            message: '请输入收货人姓名',
+            trigger: 'blur'
+          }],
+          phoneNumber: [{
+            required: true,
+            message: '请输入联系方式',
+            trigger: 'blur'
+          }],
+          expressId: [{
+            required: true,
+            type: 'number',
+            message: '请输入邮寄方式',
+            trigger: 'blur'
+          }],
+          address: [{
+            required: true,
+            validator: validateAddress,
+            trigger: 'blur'
+          }],
+          goodsNumber: [{
+            required: true,
+            validator: validateGoodsNumber,
+            trigger: 'blur'
+          }]
+        },
+        form:{
+          phoneNumber: '',
+          agentGoodsId: '',
+          colorTypeId: '',
+          expressId: '',
+          userName: '',
+          address: '',
+          remark: '',
+          goodsNumber: ''
+        }
+      },
+      agentGoods: {
+        visible: false,
+        loading: false,
+        data: []
+      },
       agentInfo: {
         type: 1,
         tabIndex: '0',
@@ -310,23 +456,39 @@ export default {
         remarks: ''
       },
       agentRules: {
-        agentInfoName: [
-          { required: true, message: '请输入合伙人姓名', trigger: 'blur' }
-        ],
-        phoneNumber: [
-          { required: true, message: '请输入手机号码', trigger: 'blur' },
-          { pattern: /^1\d{10}$/, message: '请输入正确的手机号码', trigger: 'blur' }
-        ],
-        agentCompany: [
-          { required: true, message: '请选择合伙人单位', trigger: 'blur' }
-        ],
-        businessLicenseImage: [
-          { required: true, message: '请上传营业执照', trigger: 'change' }
-        ],
-        goodsStock: [
-          { required: true, message: '请填写初始库存', trigger: 'change' },
-          { pattern: /\d{1,8}/, message: '请正确填写库存', trigger: 'blur' }
-        ]
+        agentInfoName: [{
+          required: true,
+          message: '请输入合伙人姓名',
+          trigger: 'blur'
+        }],
+        phoneNumber: [{
+          required: true,
+          message: '请输入手机号码',
+          trigger: 'blur'
+        }, {
+          pattern: /^1\d{10}$/,
+          message: '请输入正确的手机号码',
+          trigger: 'blur'
+        }],
+        agentCompany: [{
+          required: true,
+          message: '请选择合伙人单位',
+          trigger: 'blur'
+        }],
+        businessLicenseImage: [{
+          required: true,
+          message: '请上传营业执照',
+          trigger: 'change'
+        }],
+        goodsStock: [{
+          required: true,
+          message: '请填写初始库存',
+          trigger: 'change'
+        }, {
+          pattern: /\d{1,8}/,
+          message: '请正确填写库存',
+          trigger: 'blur'
+        }]
       },
 
       agentInfoAreas: [],
@@ -369,7 +531,7 @@ export default {
         slteds: [],
         page: 1,
         total: 0
-      },{
+      }, {
         loading: false,
         data: [],
         slteds: [],
@@ -377,17 +539,17 @@ export default {
         total: 0
       }],
 
-      filterRules:{
+      filterRules: {
         searchKey: [],
         dateRange: []
       },
-      filters:[{
+      filters: [{
         searchKey: '',
         searchType: 'phoneNumber',
         dateRange: [],
         startDate: '',
         finishDate: ''
-      },{
+      }, {
         searchKey: '',
         searchType: 'phoneNumber',
         dateRange: [],
@@ -422,7 +584,7 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
 
-      if(isJPG && isLt2M){
+      if (isJPG && isLt2M) {
         this.uploading = true
       }
       return isJPG && isLt2M
@@ -431,11 +593,11 @@ export default {
     tabClick(tab, event) {
       this.tabInit(this.tabIndex)
     },
-    tabInit(index){
-      if(index){
-        this.tabIndex = index 
-      }else{
-        index = this.tabIndex  
+    tabInit(index) {
+      if (index) {
+        this.tabIndex = index
+      } else {
+        index = this.tabIndex
       }
 
       this.agentList[index] && this.agentList[index].data.length === 0 && this.getAgentList()
@@ -452,10 +614,55 @@ export default {
       this.getAgentList()
     },
     refreshList() {
-      this.getAgentList()
+      this.getAgentList(this.agentList[this.tabIndex].page)
     },
     search() {
       this.getAgentList()
+    },
+    deliveryGoodsDialog(item) { // 提货
+      this.deliveryGoods.visible = true
+      let loading = this.$loading()
+      this.$api.agent.getDeliveryInfo(item.agentGoodsId).then(({data}) => {
+        data.goodsStock = item.goodsStock 
+        this.deliveryGoods.info = data
+        this.deliveryGoods.form.agentGoodsId = item.agentGoodsId
+        this.deliveryGoods.form.colorTypeId = (data.colour[0] || {}).colorId || ''
+      }).finally(() => {
+        loading.close()
+      })
+    },
+    deliveryGoodsSubmit() {
+      this.$refs.deliveryGoodsForm.validate((valid) => {
+        if (valid) {
+          this.deliveryGoods.submiting = true
+          this.$api.agent.deliveryGoods(this.deliveryGoods.form).then(({data}) => {
+            this.$message({
+              type: 'success',
+              message: '提货成功'
+            })
+            this.$refs.deliveryGoodsForm.resetFields()
+            this.deliveryGoods.visible = false
+            this.agentGoods.visible = false
+            window.open(data)
+            // this.stockAdmin(this.agentGoods.agentInfoId)
+          }).finally(() => {
+            this.deliveryGoods.submiting = false
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    stockAdmin(agentInfoId = '') { // 库存管理
+      this.agentGoods.visible = true
+      this.agentGoods.loading = true
+      this.agentGoods.agentInfoId = agentInfoId
+      this.$api.agent.getStockList(agentInfoId).then(({data}) => {
+        this.agentGoods.data = data.agentInfos
+      }).finally(() => {
+        this.agentGoods.loading = false
+      })
     },
     getAgentList(page = 1) {
       let index = this.tabIndex
@@ -463,26 +670,26 @@ export default {
       let filter = this.filters[index]
       let formData = {}
 
-      if(filter){
+      if (filter) {
         filter.searchType && (formData[filter.searchType] = filter.searchKey)
         formData.startDate = filter.dateRange[0] ? filter.dateRange[0].format('yyyy-MM-dd') : ''
-        formData.finishDate = filter.dateRange[1] ? filter.dateRange[1].format('yyyy-MM-dd') : ''  
+        formData.finishDate = filter.dateRange[1] ? filter.dateRange[1].format('yyyy-MM-dd') : ''
       }
 
       formData.isPartner = this.tabIndex == 0 ? 1 : 0
-      
+
       agentList.loading = true
-      this.$api.agent.getList(formData, page, agentList.rows).then(({data})=>{
+      this.$api.agent.getList(formData, page, agentList.rows).then(({data}) => {
         agentList.total = data.total
         agentList.page = data.page
         agentList.rows = data.rows
         agentList.data = data.agentInfos
-      }).finally(()=>{
+      }).finally(() => {
         agentList.loading = false
       })
     },
     addAgentArea() {
-      if(!this.agentForm.agentInfoId){
+      if (!this.agentForm.agentInfoId) {
         this.$message('请先保存合伙人基本信息')
         this.agentInfo.tabIndex = '0'
         return
@@ -490,7 +697,7 @@ export default {
       this.agentInfoArea.visible = true
     },
     saveAgentArea() {
-      if(this.cityDataSlted.length === 0){
+      if (this.cityDataSlted.length === 0) {
         this.$message('请选择代理区域')
         return
       }
@@ -500,7 +707,7 @@ export default {
         provinceId: this.cityDataSlted[0],
         cityId: this.cityDataSlted[1],
         areaId: this.cityDataSlted[2]
-      }).then(({data})=>{
+      }).then(({data}) => {
         this.$message({
           type: 'success',
           message: '保存成功'
@@ -509,7 +716,7 @@ export default {
         this.agentInfoAreas.push(data)
         this.agentInfoArea.visible = false
         this.$refs.agentDialog.close()
-      }).finally(()=>{
+      }).finally(() => {
         this.agentInfoArea.loading = false
       })
     },
@@ -518,46 +725,43 @@ export default {
       this.agentInfo.visible = true
       this.agentInfo.tabIndex = '0'
     },
-    closeAgentDialog(done){
-      if(this.agentForm.agentInfoId && this.agentInfoAreas.length === 0){
+    closeAgentDialog(done) {
+      if (this.agentForm.agentInfoId && this.agentInfoAreas.length === 0) {
         this.agentInfo.tabIndex = '1'
         this.$message('请添加代理区域')
-      }else{
+      } else {
         done()
         this.agentInfo.visible = false
         this.agentInfoAreas = []
         this.resetAgentForm()
-        if(this.agentInfo.submited){
+        if (this.agentInfo.submited) {
           this.getAgentList(this.agentList[this.tabIndex].page)
         }
       }
     },
-    openXiaoUDialog() {
-      this.xiaoUInfo.visible = true
-    },
     getXiaoU() {
       this.resetXiaoUForm()
       this.xiaoUInfo.loading = true
-      this.$api.agent.getUserInfo(this.xiaoUForm.phoneNumber).then(({data})=>{
+      this.$api.agent.getUserInfo(this.xiaoUForm.phoneNumber).then(({data}) => {
         Object.assign(this.xiaoUInfo.data, data)
-      }).finally(()=>{
+      }).finally(() => {
         this.xiaoUInfo.loading = false
       })
     },
     changeXiaoU() {
       this.xiaoUInfo.submiting = true
-      this.$api.agent.changeXiaoU(this.xiaoUForm).then(({data})=>{
+      this.$api.agent.changeXiaoU(this.xiaoUForm).then(({data}) => {
         this.$message({
           type: 'success',
           message: '升级小U店员成功'
         })
         this.xiaoUForm.phoneNumber = ''
         this.resetXiaoUForm()
-      }).finally(()=>{
+      }).finally(() => {
         this.xiaoUInfo.submiting = false
       })
     },
-    resetXiaoUForm(){
+    resetXiaoUForm() {
       this.xiaoUForm.agentInfoName = ''
       this.xiaoUInfo.data.userName = ''
       this.xiaoUInfo.data.maxGoodsNumber = ''
@@ -566,27 +770,27 @@ export default {
     resetAgentForm() {
       this.agentForm.agentInfoId = ''
       this.$refs.agentForm.resetFields()
-      this.$refs.agentUpload.clearFiles()  
+      this.$refs.agentUpload.clearFiles()
     },
     editAgentInfo(agentInfoId) {
-      if(!agentInfoId){
+      if (!agentInfoId) {
         this.$message('代理商ID为空')
         return
       }
 
       let loading = this.$loading()
-      this.$api.agent.getInfo(agentInfoId).then(({data})=>{
+      this.$api.agent.getInfo(agentInfoId).then(({data}) => {
         this.agentInfo.submited = false
         this.openAgentDialog(2)
-        if(data){
-          this.$nextTick(()=>{
+        if (data) {
+          this.$nextTick(() => {
             this.agentInfoAreas = data.agentInfoAreas
-            Object.keys(this.agentForm).forEach((key)=>{
+            Object.keys(this.agentForm).forEach((key) => {
               this.agentForm[key] = data[key]
-            }) 
+            })
           })
         }
-      }).finally(()=>{
+      }).finally(() => {
         loading.close()
       })
     },
@@ -594,27 +798,27 @@ export default {
       this.$refs.agentForm.validate((valid) => {
         if (valid) {
           this.agentInfo.submiting = true
-          this.$api.agent.addOrEdit(this.agentForm).then(({data})=>{
+          this.$api.agent.addOrEdit(this.agentForm).then(({data}) => {
             this.agentInfo.submited = true
-            if(data){
+            if (data) {
               this.agentForm.agentInfoId = data
               this.$message({
                 type: 'success',
                 message: '保存合伙人信息成功'
               })
               this.agentInfo.tabIndex = '1'
-            }else{
+            } else {
               this.$message({
                 type: 'error',
                 message: '保存合伙人信息失败'
               })
             }
-          }).finally(()=>{
+          }).finally(() => {
             this.agentInfo.submiting = false
           })
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
       })
     }
@@ -625,24 +829,28 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.avatar-uploader .el-upload{
+.avatar-uploader .el-upload {
   cursor: pointer;
   position: relative;
   overflow: hidden;
   position: relative;
 }
+
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
 }
+
 .avatar-uploader .el-upload__tip {
   display: inline-block;
   vertical-align: middle;
   margin-left: 15px;
   line-height: 1;
 }
-.avatar-uploader .avatar, .avatar-uploader-icon {
+
+.avatar-uploader .avatar,
+.avatar-uploader-icon {
   border-radius: 5px;
-  border:1px solid #bfcbd9;
+  border: 1px solid #bfcbd9;
   font-size: 28px;
   color: #8c939d;
   width: 100px;
@@ -652,18 +860,29 @@ export default {
   vertical-align: middle;
 }
 
-.l-agent-list{
-  border: 1px solid #dfe6ec; border-collapse:collapse; width: 700px; margin: 20px 50px;
-  th,td{ border-bottom: 1px solid #dfe6ec; padding: 10px 20px; text-align: left;}
-  th{
+.l-agent-list {
+  border: 1px solid #dfe6ec;
+  border-collapse: collapse;
+  width: 700px;
+  margin: 20px 50px;
+  th,
+  td {
+    border-bottom: 1px solid #dfe6ec;
+    padding: 10px 20px;
+    text-align: left;
+  }
+  th {
     background-color: #eef1f6;
   }
 }
-.l-agent-info{
-  max-width: 700px; margin:30px auto;
+
+.l-agent-info {
+  max-width: 700px;
+  margin: 30px auto;
 }
-.l-input-block{
-  .el-form-item__content{
+
+.l-input-block {
+  .el-form-item__content {
     width: 498px;
     max-width: 100%;
   }

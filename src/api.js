@@ -68,8 +68,11 @@ const _http = {
 const _api = {
 	baseUrl,
 	login(formData) {
-		storage.local.remove('sessionId')
-		return _http.post('/login', formData)
+		return _http.post('/login', formData).then((response)=>{
+			storage.local.set('sessionId', response.data.sessionId)
+      storage.local.set('userInfo', response.data)
+      return response
+		})
 	},
 	logout() {
 		let loading = _vue.$loading()
@@ -89,27 +92,17 @@ const _api = {
 	checkLogin() {
 		return !!storage.local.get('sessionId')
 	},
-	getExpressList() {
-		return new Promise((resolve, reject)=>{
-			let expressList = storage.session.get('temp_express_list')
-			if(expressList && expressList.length > 0){
-				resolve({data: expressList})
-			}else{
-				_http.post('/expressList').then((reponse)=>{
-					reponse.data = reponse.data || []
-					storage.session.set('temp_express_list', reponse.data)
-					resolve(reponse)
-				})
-			}
-		})
-	},
-	deliverDoods(formData) {
-		return _http.post('/sendOrder', formData)
-	},
 	user: {
 		getInfo() {
 			return new Promise((resolve)=>{
 				resolve({data: storage.local.get('userInfo') || {}})
+			})
+		},
+		changePwd(formData = {}) {
+			return _http.post('/changePassword', formData).then((response)=>{
+				storage.local.set('sessionId', response.data.sessionId)
+	      storage.local.set('userInfo', response.data)
+	      return response
 			})
 		}
 	},
@@ -135,6 +128,23 @@ const _api = {
 		},
 		examineAfterSales(afterSalesId, status = '', refuseRemark = '') {
 			return _http.post('/afterSalesexamine', { afterSalesId, isPass: status, refuseRemark })
+		},
+		getExpressList() {
+			return new Promise((resolve, reject)=>{
+				let expressList = storage.session.get('temp_express_list')
+				if(expressList && expressList.length > 0){
+					resolve({data: expressList})
+				}else{
+					_http.post('/expressList').then((response)=>{
+						response.data = response.data || []
+						storage.session.set('temp_express_list', response.data)
+						resolve(response)
+					})
+				}
+			})
+		},
+		deliverDoods(formData) {
+			return _http.post('/sendOrder', formData)
 		}
 	},
 	agent: {
@@ -176,6 +186,20 @@ const _api = {
 		},
 		examineRebateH(rebateRecordIds = '', remark = '') {
 			return _http.post('/examineRebate_H', { rebateRecordIds, remark })
+		},
+		getStockList(agentInfoId = '') { // 库存列表
+			return _http.post('/agentGoods', { agentInfoId })
+		},
+		getDeliveryInfo(agentGoodsId = '') {
+			return _http.post('/deliveryGoodsBefor', { agentGoodsId })
+		},
+		deliveryGoods(formData = {}) { // 提货
+			return _http.post('/deliveryGoods', formData)
+		},
+		getDeliveryList(formData = {}, page = 1, rows = 20) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/deliveryList', formData)
 		}
 	},
 	goods: {
@@ -186,6 +210,24 @@ const _api = {
 		},
 		examineEvaluate(formData = {}) {
 			return _http.post('/judge', formData)
+		}
+	},
+	marketer: {
+		getList(formData = {}, page = 1, rows = 20) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/marketersList', formData)
+		},
+		getUser(phoneNumber = '') {
+			return _http.post('/checkGetReadyMarketers', { phoneNumber })
+		},
+		add(formData = {}) {
+			return _http.post('/addMarketers', formData)
+		},
+		getScanList(formData = {}, page = 1, rows = 20) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/scanRecord', formData)
 		}
 	}
 }

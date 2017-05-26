@@ -53,6 +53,11 @@
     padding: 15px;
   }
 }
+
+.l-padding-0{
+  .el-dialog__body{padding: 0;}
+}
+
 .l-panel-tit{font-weight: 700; border-bottom: 1px solid #EFF2F7; padding: 0 0 10px 0; margin-bottom: 10px;}
 .l-inline-row{
   ._td{padding: 5px 20px 5px 0;/* white-space: nowrap; */ margin: 0; box-sizing: border-box;}
@@ -76,7 +81,7 @@
 .l-express-list{
   overflow-x: hidden; margin: -15px 0 0 -15px;
   ._item{
-    border:1px solid #ddd; padding: 15px; float: left; min-width: 133px;
+    border:1px solid #ddd; padding: 15px; float: left; min-width: 133px; min-height: 80px;
     margin: 15px 0 0 15px; cursor: pointer;
   }
   h3, p{margin: 10px 0;}

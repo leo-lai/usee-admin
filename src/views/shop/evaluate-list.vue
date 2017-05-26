@@ -10,7 +10,7 @@
             </el-button-group>  
           </el-form-item> -->
           <el-form-item label="审核状态">
-            <el-select placeholder="审核状态" v-model="filter.judgegState" @change="getEvaluateList(1)">
+            <el-select placeholder="审核状态" style="width: 150px;" v-model="filter.judgegState" @change="getEvaluateList(1)">
               <el-option label="全部" value=""></el-option>
               <el-option label="未审核" value="0"></el-option>
               <el-option label="审核通过" value="1"></el-option>
@@ -78,9 +78,9 @@
       </span>
     </el-dialog>
 
-    <el-dialog custom-class="l-dialog" title="查看图片" v-model="images.visible" size="full" >
+    <el-dialog custom-class="l-dialog l-padding-0" title="查看图片" v-model="images.visible" size="full" >
       <el-carousel ref="carousel" arrow="always" :height="images.height" :initial-index="0" :autoplay="false">
-        <el-carousel-item v-for="item in images.data" >
+        <el-carousel-item class="l-flex-vhc" v-for="(item,index) in images.data" :key="index">
           <img :src="item" alt="">
         </el-carousel-item>
       </el-carousel>
@@ -230,20 +230,17 @@ export default {
     }
   },
   mounted() {
-    this.images.height = (window.screen.height - 200) + 'px'
+    this.images.height = ( Math.max(document.body.clientHeight, document.documentElement.clientHeight) - 47) + 'px'
     this.getEvaluateList()
   }
 }
 </script>
 <style scoped lang="scss">
 .el-carousel__item {
-  text-align: center;
-  background-color: #eef1f6;
+  background-color: #000;
+  img{
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
-
-.el-carousel__item img{
-  max-width: 100%;
-  max-height: 100%;
-}
-
 </style>

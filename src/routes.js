@@ -1,16 +1,19 @@
-import frame            from './views/frame.vue'
-import webview          from './views/webview.vue'
-import login            from './views/login.vue'
-import NotFound         from './views/404.vue'
-import index            from './views/index.vue'
-import GoodsList        from './views/shop/goods-list.vue'
-import EvaluateList     from './views/shop/evaluate-list.vue'
-import OrderList        from './views/shop/order-list.vue'
-import OrderPrint       from './views/shop/order-print.vue'
-import AfterSales       from './views/shop/after-sales.vue'
+import frame            from './views/frame'
+import webview          from './views/webview'
+import login            from './views/login'
+import NotFound         from './views/404'
+import index            from './views/index'
+import GoodsList        from './views/shop/goods-list'
+import EvaluateList     from './views/shop/evaluate-list'
+import OrderList        from './views/shop/order-list'
+import OrderPrint       from './views/shop/order-print'
+import AfterSales       from './views/shop/after-sales'
 
-import AgentList        from './views/agent/agent-list.vue'
-import AgentRebate      from './views/agent/agent-rebate.vue'
+import AgentList        from './views/agent/agent-list'
+import AgentRebate      from './views/agent/agent-rebate'
+import AgentRecord      from './views/agent/agent-record'
+
+import UserMarketer    from './views/user/user-marketer'
 
 let routes = [
   {
@@ -55,6 +58,7 @@ let routes = [
     children: [
       { path: 'list',         component: AgentList,     name: '代理商列表' },
       { path: 'rebate',       component: AgentRebate,   name: '返利/申请' },
+      { path: 'record',       component: AgentRecord,   name: '流水/记录' },
       { path: 'setting',      component: index,         name: '基础设置',   hidden:true },
     ],
   }, {
@@ -68,7 +72,7 @@ let routes = [
         component: webview,         
         name: '绑定流水',  
         meta: {
-          href: 'http://report.deyila.cn/wabacus/howReport.wx?PAGEID=binding'  
+          href: 'http://report.deyila.cn/wabacus/ShowReport.wx?PAGEID=binding'  
         }
       },
       { 
@@ -76,7 +80,7 @@ let routes = [
         component: webview,         
         name: '返利流水',  
         meta: {
-          href: 'http://report.deyila.cn/wabacus/howReport.wx?PAGEID=rebaterecord'   
+          href: 'http://report.deyila.cn/wabacus/ShowReport.wx?PAGEID=rebaterecord'   
         }
       },
       { 
@@ -84,24 +88,23 @@ let routes = [
         component: webview,         
         name: '订单详情',
         meta: {
-          href: 'http://report.deyila.cn/wabacus/howReport.wx?PAGEID=orderInfo'   
+          href: 'http://report.deyila.cn/wabacus/ShowReport.wx?PAGEID=orderInfo'   
         }
       },
     ],
   }, {
-    path: '/',
+    path: '/user',
     component: frame,
-    name: '用户管理',
+    name: '系统管理',
     iconCls: 'l-icon-user',
-    // single: true, //只有一个节点
     children: [
-      { path: 'page12', component: index, name: '商城用户' },
-    ],
-    hidden: true,
+      { path: 'marketing', component: UserMarketer,  name: '营销人员' }
+    ]
   }, {
     path: '/',
     component: frame,
     name: '基本设置',
+    // single: true, //只有一个节点
     iconCls: 'l-icon-setting',
     children: [
       { path: 'page13', component: index, name: '系统用户' },

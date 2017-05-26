@@ -5,7 +5,7 @@
       <el-col :span="20">
         <el-form :inline="true" ref="filterForm" :model="filter" :rules="filterRules"> 
           <el-form-item label="售后类型">
-            <el-select v-model="filter.afterSalesType" @change="getAfterSales(1)">
+            <el-select v-model="filter.afterSalesType" style="width:150px;" @change="getAfterSales(1)">
               <el-option label="全部" value=""></el-option>
               <el-option label="退货退款" value="7"></el-option>
               <el-option label="换货" value="8"></el-option>
@@ -17,7 +17,7 @@
           </el-form-item>
 
           <el-form-item prop="searchKey">
-            <el-input placeholder="请输入内容" style="width: 400px;" v-model="filter.searchKey">
+            <el-input placeholder="请输入内容" style="width: 350px;" v-model="filter.searchKey">
               <el-select slot="prepend" placeholder="搜索类型" v-model="filter.searchType">
                 <el-option label="手机号码" value="phoneNumber"></el-option>
                 <el-option label="商品名称" value="goodsName"></el-option>
@@ -76,7 +76,9 @@
         <template scope="scope">
           <el-button size="small" type="text" v-if="scope.row.images.length > 0" @click.native.prevent="viewImages(scope.row.images)">查看图片</el-button>
           <el-button size="small" type="text" v-if="scope.row.afterSalesState == 0" @click.native.prevent="examineDialog(scope.row)">审核</el-button>
-          <el-button size="small" type="text" v-if="scope.row.afterSalesState == 1 && !scope.row.isExpress" @click.native.prevent="express(scope.row.afterSalesId)">发货</el-button>
+          <el-button size="small" type="text" 
+            v-if="scope.row.afterSalesState == 1 && scope.row.afterSalesType == 8 && !scope.row.isExpress" 
+            @click.native.prevent="express(scope.row.afterSalesId)">发货</el-button>
           <el-button size="small" type="text" v-if="scope.row.isExpress" @click.native.prevent="expressView(scope.row.expressURL)">查看快递单</el-button>
         </template>
       </el-table-column>
@@ -99,9 +101,9 @@
       </span>
     </el-dialog>
 
-    <el-dialog custom-class="l-dialog" title="查看图片" :visible.sync="images.visible" size="full" >
+    <el-dialog custom-class="l-dialog l-padding-0" title="查看图片" :visible.sync="images.visible" size="full" >
       <el-carousel ref="carousel" arrow="always" :height="images.height" :initial-index="0" :autoplay="false">
-        <el-carousel-item v-for="item in images.data" >
+        <el-carousel-item class="l-flex-vhc" v-for="(item,index) in images.data" :key="index">
           <img :src="item" alt="">
         </el-carousel-item>
       </el-carousel>
@@ -137,7 +139,8 @@ export default {
           'SHIPPER': '寄方付',
           'CONSIGNEE': '到付',
           'MONTHLY': '月结',
-          'THIRDPARTY': '第三方支付'
+          'THIRDPARTY': '第三方支付',
+          'ZITI': '不发快递'
         },
         slted: {},
         data: []
@@ -246,7 +249,7 @@ export default {
       this.expressInfo.afterSalesId = afterSalesId
       
       let loading = this.$loading()
-      this.$api.getExpressList().then(({data})=>{
+      this.$api.order.getExpressList().then(({data})=>{
         this.expressInfo.data = data
         this.expressInfo.slted = this.expressInfo.data[0]
         this.expressInfo.visible = true
@@ -322,19 +325,17 @@ export default {
     }
   },
   mounted() {
-    this.images.height = (window.screen.height - 200) + 'px'
+    this.images.height = ( Math.max(document.body.clientHeight, document.documentElement.clientHeight) - 47) + 'px'
     this.getAfterSales()
   }
 }
 </script>
 <style scoped lang="scss">
 .el-carousel__item {
-  text-align: center;
-  background-color: #eef1f6;
-}
-
-.el-carousel__item img{
-  max-width: 100%;
-  max-height: 100%;
+  background-color: #000;
+  img{
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 </style>

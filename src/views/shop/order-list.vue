@@ -21,7 +21,7 @@
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey">
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[0].searchKey">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[0].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
@@ -41,17 +41,17 @@
         
         <!--列表-->
         <el-table :data="orderList[0].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[0].loading" @selection-change="sltChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
-          <el-table-column prop="orderCode" label="订单编号" min-width="150"></el-table-column>
-          <el-table-column prop="startDate" label="下单日期" min-width="150"></el-table-column>
-          <el-table-column prop="amount" align="center" label="订单金额" min-width="120"></el-table-column>
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" type="index" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="120"></el-table-column>
+          <el-table-column prop="startDate" label="下单日期" min-width="120"></el-table-column>
+          <el-table-column align="center"  prop="amount"label="订单金额" min-width="100"></el-table-column>
           <el-table-column align="center" label="订单状态" min-width="120">
             <template scope="scope">
               <span :class="formatState(scope.row.ordersState, 'cls')">{{formatState(scope.row.ordersState)}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="购买商品" min-width="100">
+          <el-table-column align="center" label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
                 <table class="l-inner-table">
@@ -73,13 +73,13 @@
             </template>
           </el-table-column>
           <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="买家手机" min-width="120"></el-table-column>
-          <el-table-column align="center" label="开发票" min-width="120">
+          <el-table-column align="center" prop="phoneNumber" label="买家手机" min-width="100"></el-table-column>
+          <el-table-column align="center" label="开发票" min-width="100">
             <template scope="scope">
               <span :class="{'l-text-error': scope.row.isPaperCheck}">{{scope.row.isPaperCheck?'是':'否'}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作" min-width="120">
+          <el-table-column align="center" label="操作" min-width="150">
             <template scope="scope">
               <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看详情</el-button>
               <el-button v-if="scope.row.ordersState == 2" size="small" type="text" @click.native.prevent="examine(1, scope.row.orderId)">审核通过</el-button>
@@ -115,7 +115,7 @@
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[1].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[1].searchKey">
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[1].searchKey">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[1].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
@@ -135,17 +135,12 @@
         
         <!--列表-->
         <el-table :data="orderList[1].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[1].loading" @selection-change="sltChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
-          <el-table-column prop="orderCode" label="订单编号" min-width="150"></el-table-column>
-          <el-table-column prop="startDate" label="下单日期" min-width="150"></el-table-column>
-          <el-table-column prop="amount" align="center" label="订单金额" min-width="120"></el-table-column>
-          <!-- <el-table-column align="center" label="订单状态" min-width="120">
-            <template scope="scope">
-              <span :class="formatState(scope.row.ordersState, 'cls')">{{formatState(scope.row.ordersState)}}</span>
-            </template>
-          </el-table-column> -->
-          <el-table-column label="购买商品" min-width="100">
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" type="index" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="120"></el-table-column>
+          <el-table-column prop="startDate" label="下单日期" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="amount" label="订单金额" min-width="100"></el-table-column>
+          <el-table-column align="center" label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
                 <table class="l-inner-table">
@@ -167,13 +162,13 @@
             </template>
           </el-table-column>
           <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="买家手机" min-width="120"></el-table-column>
-          <el-table-column align="center" label="开发票" min-width="120">
+          <el-table-column align="center" prop="phoneNumber" label="买家手机" min-width="100"></el-table-column>
+          <el-table-column align="center" label="开发票" min-width="100">
             <template scope="scope">
               <span :class="{'l-text-error': scope.row.isPaperCheck}">{{scope.row.isPaperCheck?'是':'否'}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作" min-width="120">
+          <el-table-column align="center" label="操作" min-width="100">
             <template scope="scope">
               <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
             </template>
@@ -214,7 +209,7 @@
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[2].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[2].searchKey">
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[2].searchKey">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[2].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
@@ -234,12 +229,12 @@
         
         <!--列表-->
         <el-table :data="orderList[2].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[2].loading" @selection-change="sltChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
-          <el-table-column prop="orderCode" label="订单编号" min-width="150"></el-table-column>
-          <el-table-column prop="payDate" label="支付时间" min-width="150"></el-table-column>
-          <el-table-column prop="amount" align="center" label="订单金额" min-width="120"></el-table-column>
-          <el-table-column label="购买商品" min-width="100">
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" type="index" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="120"></el-table-column>
+          <el-table-column prop="payDate" label="支付时间" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="amount" label="订单金额" min-width="100"></el-table-column>
+          <el-table-column align="center" label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
                 <table class="l-inner-table">
@@ -261,8 +256,8 @@
             </template>
           </el-table-column>
           <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="买家手机" min-width="120"></el-table-column>
-          <el-table-column align="center" label="开发票" min-width="120">
+          <el-table-column align="center" prop="phoneNumber" label="买家手机" min-width="100"></el-table-column>
+          <el-table-column align="center" label="开发票" min-width="100">
             <template scope="scope">
               <span :class="{'l-text-error': scope.row.isPaperCheck}">{{scope.row.isPaperCheck?'是':'否'}}</span>
             </template>
@@ -297,7 +292,7 @@
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[3].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[3].searchKey">
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[3].searchKey">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[3].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
@@ -317,16 +312,15 @@
         
         <!--列表-->
         <el-table :data="orderList[3].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[3].loading" @selection-change="sltChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
-          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
-          <el-table-column prop="examineDate" label="审核日期" min-width="140"></el-table-column>
-          <el-table-column prop="systenUsersName" label="审核人" width="100"></el-table-column>
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" type="index" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="120"></el-table-column>
+          <el-table-column prop="examineDate" label="审核日期" min-width="120"></el-table-column>
+          <el-table-column prop="systenUsersName" label="审核人" min-width="100"></el-table-column>
           <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="买家手机" min-width="120"></el-table-column>
-          <el-table-column prop="region" label="收货区域" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="phoneNumber" label="买家手机" min-width="100"></el-table-column>
           <el-table-column prop="address" label="收货地址" min-width="120"></el-table-column>
-          <el-table-column label="购买商品" min-width="100">
+          <el-table-column align="center" label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
                 <table class="l-inner-table">
@@ -377,7 +371,7 @@
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[4].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[4].searchKey">
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[4].searchKey">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[4].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
@@ -398,16 +392,15 @@
         <!--列表-->
         <!--列表-->
         <el-table :data="orderList[4].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[4].loading" @selection-change="sltChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
-          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
-          <el-table-column prop="examineDate" label="审核日期" min-width="140"></el-table-column>
-          <el-table-column prop="systenUsersName" label="审核人" width="100"></el-table-column>
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" type="index" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="120"></el-table-column>
+          <el-table-column prop="examineDate" label="审核日期" min-width="120"></el-table-column>
+          <el-table-column prop="systenUsersName" label="审核人" min-width="100"></el-table-column>
           <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="买家手机" min-width="120"></el-table-column>
-          <el-table-column prop="region" label="收货区域" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="phoneNumber" label="买家手机" min-width="100"></el-table-column>
           <el-table-column prop="address" label="收货地址" min-width="120"></el-table-column>
-          <el-table-column label="购买商品" min-width="100">
+          <el-table-column align="center" label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
                 <table class="l-inner-table">
@@ -458,7 +451,7 @@
                 <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[5].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[5].searchKey">
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[5].searchKey">
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[5].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
@@ -479,15 +472,14 @@
         <!--列表-->
         <!--列表-->
         <el-table :data="orderList[5].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[5].loading" @selection-change="sltChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
-          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
-          <el-table-column prop="examineDate" label="收货日期" min-width="140"></el-table-column>
-          <el-table-column align="center" prop="" label="可返利时间" min-width="120"></el-table-column>
-          <el-table-column prop="" label="返利金额" min-width="120"></el-table-column>
-          <el-table-column label="代理商" min-width="120"></el-table-column>
-          <el-table-column prop="address" label="代理商手机" min-width="120"></el-table-column>
-          <el-table-column label="购买商品" min-width="100">
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" type="index" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="120"></el-table-column>
+          <el-table-column prop="examineDate" label="收货日期" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="phoneNumber" label="买家手机" min-width="100"></el-table-column>
+          <el-table-column prop="address" label="收货地址" min-width="120"></el-table-column>
+          <el-table-column align="center" label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
                 <table class="l-inner-table">
@@ -508,7 +500,8 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作" min-width="120">
+          <el-table-column prop="amount" align="center" label="订单金额" min-width="100"></el-table-column>
+          <el-table-column align="center" label="操作" min-width="100">
             <template scope="scope">
               <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
             </template>
@@ -532,13 +525,13 @@
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="24">
-            <el-form ref="filterForm-5" :model="filters[7]" :rules="filterRules" :inline="true">
+            <el-form ref="filterForm-5" :model="filters[6]" :rules="filterRules" :inline="true">
               <el-form-item label="下单日期" prop="dateRange">
-                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[7].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[6].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[7].searchKey">
-                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[7].searchType">
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[6].searchKey">
+                  <el-select slot="prepend" placeholder="搜索类型" v-model="filters[6].searchType">
                     <el-option label="订单编号" value="orderCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
@@ -557,14 +550,15 @@
         
         <!--列表-->
         <!--列表-->
-        <el-table :data="orderList[7].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[7].loading" @selection-change="sltChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="index" align="center" label="#" width="55"></el-table-column>
-          <el-table-column prop="orderCode" label="订单编号" min-width="140"></el-table-column>
-          <el-table-column prop="startDate" label="下单日期" min-width="140"></el-table-column>
-          <el-table-column prop="userName" label="买家名称" align="center" min-width="120"></el-table-column>
-          <el-table-column prop="amount" label="订单金额(元)" align="center" min-width="120"></el-table-column>
-          <el-table-column label="购买商品" min-width="100">
+        <el-table :data="orderList[6].data" stripe highlight-current-row element-loading-text="拼命加载中" v-loading="orderList[6].loading" @selection-change="sltChange">
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" type="index" label="#" width="55"></el-table-column>
+          <el-table-column prop="orderCode" label="订单编号" min-width="120"></el-table-column>
+          <el-table-column prop="startDate" label="下单日期" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="userName" label="买家名称" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="phoneNumber" label="买家手机" min-width="100"></el-table-column>
+          <el-table-column prop="address" label="收货地址" min-width="120"></el-table-column>
+          <el-table-column align="center" label="购买商品" min-width="100">
             <template scope="scope">
               <el-popover trigger="hover" placement="top">
                 <table class="l-inner-table">
@@ -585,7 +579,8 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作" min-width="120">
+          <el-table-column align="center" prop="amount" label="订单金额(元)" min-width="100"></el-table-column>
+          <el-table-column align="center" label="操作" min-width="100">
             <template scope="scope">
               <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
             </template>
@@ -597,10 +592,10 @@
         <!--分页-->
         <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{orderList[7].total}}条记录</span>
+            <span class="l-text-gray">共{{orderList[6].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[7].total">
+            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[6].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -667,7 +662,7 @@
           :class="{'_active': expressInfo.slted.expressId === item.expressId}" 
           @click="expressInfo.slted = item">
           <h3>{{item.expressName}}</h3>
-          <p>{{expressInfo.payType[item.payType]}}</p>
+          <p>{{expressInfo.payType[item.payType]}} </p>
         </div>
       </div>
       <div class="l-text-center l-margin-t">
@@ -689,7 +684,8 @@ export default {
           'SHIPPER': '寄方付',
           'CONSIGNEE': '到付',
           'MONTHLY': '月结',
-          'THIRDPARTY': '第三方支付'
+          'THIRDPARTY': '第三方支付',
+          'ZITI': '不发快递'
         },
         slted: {},
         data: []
@@ -976,7 +972,7 @@ export default {
       this.expressInfo.orderId = orderId
 
       let loading = this.$loading()
-      this.$api.getExpressList().then(({data})=>{
+      this.$api.order.getExpressList().then(({data})=>{
         this.expressInfo.data = data
         this.expressInfo.slted = this.expressInfo.data[0]
         this.expressInfo.visible = true
@@ -987,7 +983,7 @@ export default {
     expressOk() {
       if(this.expressInfo.slted && this.expressInfo.slted.expressId){
         this.expressInfo.loading = true
-        this.$api.deliverDoods({
+        this.$api.order.deliverDoods({
           expressId: this.expressInfo.slted.expressId,
           orderId: this.expressInfo.orderId
         }).then(({data})=>{
@@ -1041,12 +1037,6 @@ export default {
 </script>
 <style scoped lang="scss">
 @import '~scss_vars';
-.l-order{
-  .l-date{
-    width: 350px;
-    .el-form-item__content{width: 282px;}
-  }
-}
 .l-order-info{
   .l-panel-cont{
     margin-top: -5px;

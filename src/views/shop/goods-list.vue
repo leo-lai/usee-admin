@@ -19,7 +19,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <el-input placeholder="请输入商品名称" style="width: 400px;">
+                <el-input placeholder="请输入商品名称" style="width: 350px;">
                   <el-select slot="prepend" placeholder="商品分类">
                     <el-option label="U视喷喷" value="1"></el-option>
                   </el-select>

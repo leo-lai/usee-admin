@@ -6,15 +6,18 @@
         <el-row class="l-toolbar">
           <el-col :span="24">
             <el-form ref="filterForm-0" :model="filters[0]" :rules="filterRules" :inline="true">
+              <el-form-item label="审核时间" prop="dateRange">
+                <el-date-picker type="daterange" placeholder="选择日期范围" :editable="false" v-model="filters[0].dateRange" :picker-options="pickerOptions" @change="search"></el-date-picker>
+              </el-form-item>
               <el-form-item label="代理商类型">
-                <el-select placeholder="代理商类型" v-model="filters[0].agentId" @change="getRebateList(1)">
+                <el-select placeholder="代理商类型" style="width:150px;" v-model="filters[0].agentId" @change="getRebateList(1)">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="小U店员" value="1"></el-option>
                   <el-option label="合伙人" value="2"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="审核状态">
-                <el-select placeholder="审核状态" v-model="filters[0].rebateRecordState" @change="getRebateList(1)">
+                <el-select placeholder="审核状态" style="width:150px;" v-model="filters[0].rebateRecordState" @change="getRebateList(1)">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="未审核" value="0"></el-option>
                   <el-option label="已通过" value="1"></el-option>
@@ -22,7 +25,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[0].searchKey" >
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[0].searchKey" >
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[0].searchType">
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                     <el-option label="订单号" value="orderCode"></el-option>
@@ -93,14 +96,14 @@
           <el-col :span="24">
             <el-form ref="filterForm-1" :model="filters[1]" :rules="filterRules" :inline="true">
               <el-form-item label="代理商类型">
-                <el-select placeholder="代理商类型" v-model="filters[1].agentId" @change="getRebateList(1)">
+                <el-select placeholder="代理商类型" style="width:150px;" v-model="filters[1].agentId" @change="getRebateList(1)">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="小U店员" value="1"></el-option>
                   <el-option label="合伙人" value="2"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="审核状态">
-                <el-select placeholder="审核状态" v-model="filters[1].withdrawalsState" @change="getRebateList(1)">
+                <el-select placeholder="审核状态" style="width:150px;" v-model="filters[1].withdrawalsState" @change="getRebateList(1)">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="未审核" value="0"></el-option>
                   <el-option label="已通过" value="1"></el-option>
@@ -108,7 +111,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[1].searchKey" >
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[1].searchKey" >
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[1].searchType">
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                     <el-option label="订单号" value="orderCode"></el-option>
@@ -131,7 +134,7 @@
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="index" label="#" width="55"></el-table-column>
           <el-table-column prop="withdrawalCode" label="提现单号" min-width="120"></el-table-column>
-          <el-table-column prop="userName" label="提现代理商" min-width="120"></el-table-column>
+          <el-table-column prop="agentInfoName" label="提现代理商" min-width="120"></el-table-column>
           <el-table-column prop="phoneNumber" label="手机号码" min-width="100"></el-table-column>
           <el-table-column prop="agentId" label="代理商类型" align="center" min-width="100">
             <template scope="scope">
@@ -189,14 +192,14 @@
           <el-col :span="24">
             <el-form ref="filterForm-2" :model="filters[2]" :rules="filterRules" :inline="true">
               <el-form-item label="状态">
-                <el-select placeholder="状态" v-model="filters[2].rebateRecordState" @change="getRebateList(1)">
+                <el-select placeholder="状态" style="width:150px;" v-model="filters[2].rebateRecordState" @change="getRebateList(1)">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="未打款" value="1"></el-option>
                   <el-option label="已打款" value="3"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item prop="searchKey">
-                <el-input placeholder="请输入内容" style="width: 400px;" v-model="filters[2].searchKey" >
+                <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[2].searchKey" >
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[2].searchType">
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
@@ -316,6 +319,33 @@ export default {
         }
       ],
 
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
       filterRules:{
         searchKey: [],
         dateRange: [],
@@ -378,7 +408,7 @@ export default {
       this.getRebateList()
     },
     refreshList() {
-      this.getRebateList()  
+      this.getRebateList(this.rebateList[this.tabIndex].page)  
     },
     search() {
       this.getRebateList()
@@ -392,8 +422,8 @@ export default {
       if(filter){
         filter.searchType && (formData[filter.searchType] = filter.searchKey)
         formData.agentId = filter.agentId
-        formData.startDate = filter.dateRange[0] ? filter.dateRange[0].format('yyyy-MM-dd') : ''
-        formData.finishDate = filter.dateRange[1] ? filter.dateRange[1].format('yyyy-MM-dd') : '' 
+        formData.examineStartDate = filter.dateRange[0] ? filter.dateRange[0].format('yyyy-MM-dd') : ''
+        formData.examineFinishDate = filter.dateRange[1] ? filter.dateRange[1].format('yyyy-MM-dd') : '' 
       }
       
       rebateList.loading = true
@@ -404,6 +434,7 @@ export default {
       }else{
         formData.rebateRecordState = filter.rebateRecordState
         formData.isPartner = this.tabIndex == 2 ? 1 : ''
+        formData.agentId = this.tabIndex == 2 ? 2 : ''
         promise = this.$api.agent.getRebateList(formData, page, rebateList.rows)
       }
       promise.then(({data})=>{
@@ -478,6 +509,3 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
-
-</style>
