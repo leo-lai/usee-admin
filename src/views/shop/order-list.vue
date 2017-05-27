@@ -57,11 +57,13 @@
                 <table class="l-inner-table">
                   <tr>
                     <th>商品名称</th>
+                    <th>商品款式</th>
                     <th>商品数量</th>
                     <th>商品价格</th>
                   </tr>
                   <tr v-for="item in scope.row.ordersInfo">
                     <td>{{item.goodsName}}</td>
+                    <td>{{item.colorTypeName}}</td>
                     <td>{{item.goodsNumber}}</td>
                     <td>{{item.goodsAmount}}</td>
                   </tr>
@@ -98,10 +100,16 @@
         <!--分页-->
         <el-row class="l-toolbar"  type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{orderList[0].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[0].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="orderList[0].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="orderList[0].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="orderList[0].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -146,11 +154,13 @@
                 <table class="l-inner-table">
                   <tr>
                     <th>商品名称</th>
+                    <th>商品款式</th>
                     <th>商品数量</th>
                     <th>商品价格</th>
                   </tr>
                   <tr v-for="item in scope.row.ordersInfo">
                     <td>{{item.goodsName}}</td>
+                    <td>{{item.colorTypeName}}</td>
                     <td>{{item.goodsNumber}}</td>
                     <td>{{item.goodsAmount}}</td>
                   </tr>
@@ -179,10 +189,16 @@
         <!--分页-->
         <el-row class="l-toolbar"  type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{orderList[1].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[1].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="orderList[1].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="orderList[1].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="orderList[1].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -240,11 +256,13 @@
                 <table class="l-inner-table">
                   <tr>
                     <th>商品名称</th>
+                    <th>商品款式</th>
                     <th>商品数量</th>
                     <th>商品价格</th>
                   </tr>
                   <tr v-for="item in scope.row.ordersInfo">
                     <td>{{item.goodsName}}</td>
+                    <td>{{item.colorTypeName}}</td>
                     <td>{{item.goodsNumber}}</td>
                     <td>{{item.goodsAmount}}</td>
                   </tr>
@@ -275,10 +293,16 @@
         <!--分页-->
         <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{orderList[2].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[2].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="orderList[2].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="orderList[2].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="orderList[2].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -326,11 +350,13 @@
                 <table class="l-inner-table">
                   <tr>
                     <th>商品名称</th>
+                    <th>商品款式</th>
                     <th>商品数量</th>
                     <th>商品价格</th>
                   </tr>
                   <tr v-for="item in scope.row.ordersInfo">
                     <td>{{item.goodsName}}</td>
+                    <td>{{item.colorTypeName}}</td>
                     <td>{{item.goodsNumber}}</td>
                     <td>{{item.goodsAmount}}</td>
                   </tr>
@@ -354,10 +380,16 @@
         <!--分页-->
         <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{orderList[3].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[3].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="orderList[3].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="orderList[3].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="orderList[3].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -406,11 +438,13 @@
                 <table class="l-inner-table">
                   <tr>
                     <th>商品名称</th>
+                    <th>商品款式</th>
                     <th>商品数量</th>
                     <th>商品价格</th>
                   </tr>
                   <tr v-for="item in scope.row.ordersInfo">
                     <td>{{item.goodsName}}</td>
+                    <td>{{item.colorTypeName}}</td>
                     <td>{{item.goodsNumber}}</td>
                     <td>{{item.goodsAmount}}</td>
                   </tr>
@@ -434,10 +468,16 @@
         <!--分页-->
         <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{orderList[4].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[4].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="orderList[4].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="orderList[4].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="orderList[4].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -485,11 +525,13 @@
                 <table class="l-inner-table">
                   <tr>
                     <th>商品名称</th>
+                    <th>商品款式</th>
                     <th>商品数量</th>
                     <th>商品价格</th>
                   </tr>
                   <tr v-for="item in scope.row.ordersInfo">
                     <td>{{item.goodsName}}</td>
+                    <td>{{item.colorTypeName}}</td>
                     <td>{{item.goodsNumber}}</td>
                     <td>{{item.goodsAmount}}</td>
                   </tr>
@@ -513,10 +555,16 @@
         <!--分页-->
         <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{orderList[5].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[5].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="orderList[5].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="orderList[5].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="orderList[5].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -564,11 +612,13 @@
                 <table class="l-inner-table">
                   <tr>
                     <th>商品名称</th>
+                    <th>商品款式</th>
                     <th>商品数量</th>
                     <th>商品价格</th>
                   </tr>
                   <tr v-for="item in scope.row.ordersInfo">
                     <td>{{item.goodsName}}</td>
+                    <td>{{item.colorTypeName}}</td>
                     <td>{{item.goodsNumber}}</td>
                     <td>{{item.goodsAmount}}</td>
                   </tr>
@@ -592,10 +642,16 @@
         <!--分页-->
         <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{orderList[6].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="orderList[6].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="orderList[6].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="orderList[6].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="orderList[6].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -645,10 +701,11 @@
           </div>
           <div class="l-margin-t-s">
             <el-table border :data="orderInfo.data.goodsInfo">
-              <el-table-column prop="goodsCode" label="商品编号" min-width="180"></el-table-column>
-              <el-table-column prop="goodsName" label="商品名称" min-width="180"></el-table-column>
-              <el-table-column prop="goodsNumber" label="数量" align="center" min-width="180"></el-table-column>
-              <el-table-column prop="goodsPayAmount" label="单价" align="center" min-width="180"></el-table-column>
+              <el-table-column prop="goodsCode" label="商品编号" min-width="120"></el-table-column>
+              <el-table-column prop="goodsName" label="商品名称" min-width="120"></el-table-column>
+              <el-table-column prop="colorTypeName" label="商品款式" align="center" min-width="120"></el-table-column>
+              <el-table-column prop="goodsNumber" label="数量" align="center" min-width="120"></el-table-column>
+              <el-table-column prop="goodsPayAmount" label="单价" align="center" min-width="120"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -897,9 +954,6 @@ export default {
     sltChange(slteds) {
       this.orderList[this.tabIndex].slteds = slteds
     },
-    pageChange(page = 1) {
-      this.getOrderList(page)
-    },
     formatState(state, prop = 'name') {
       let ret = this.stateList.filter((item)=>{
         return item.state == state
@@ -927,7 +981,14 @@ export default {
     search() {
       this.getOrderList()
     },
-    getOrderList(page = 1) {
+    sizeChange(size = 200) {
+      this.orderList[this.tabIndex].rows = size
+      this.getOrderList()
+    },
+    pageChange(page = 1) {
+      this.getOrderList(page)
+    },
+    getOrderList(page = 1, size = 200) {
 
       let index = this.tabIndex
       let orderList = this.orderList[index]

@@ -39,9 +39,15 @@
           <el-table-column align="center" prop="phoneNumber" label="手机号码" min-width="120"></el-table-column>
           <el-table-column align="center" prop="startDate" label="创建时间" min-width="120"></el-table-column>
           <el-table-column align="center" prop="followNumber" label="推广人数" min-width="120"></el-table-column>
+          <el-table-column align="center" prop="followAmount" label="成交金额" min-width="120"></el-table-column>
           <el-table-column align="center" label="推广二维码" min-width="120">
             <template scope="scope">
               <img style="display:block;margin:5px auto;" width="50" @click="showQrcode(scope.row.qrImage)" :src="scope.row.qrImage" alt="">
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" min-width="120">
+            <template scope="scope">
+              <el-button size="small" type="text" @click="editArea(scope.row)">编辑区域</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -50,10 +56,16 @@
         <!--分页-->
         <el-row class="l-toolbar"  type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{list[0].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="list[0].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="list[0].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="list[0].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="list[0].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -131,6 +143,38 @@
       </el-row>
     </el-dialog>
 
+    <el-dialog title="负责区域管理" custom-class="l-dialog" :visible.sync="areaInfo.listVisible" size="tiny">
+      <table class="l-areaInfo">
+        <tr>
+          <td>真实姓名</td>
+          <td>{{areaInfo.slted.realName}}</td>
+        </tr>
+        <tr>
+          <td>负责区域</td>
+          <td>
+            <div><a @click="addArea">新增区域</a></div>
+            <ul>
+              <li v-for="item in areaInfo.list">
+                <a class="l-fr" @click="delArea(item)">删除</a>
+                {{item.areasName}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </el-dialog>
+
+    <el-dialog :visible.sync="areaInfo.areaVisible" size="tiny" :close-on-click-modal="false">
+      <el-form :inline="true" label-width="80px">
+        <el-form-item label="管理区域">
+          <el-cascader placeholder="请选择管理区域" v-model="areaInfo.sltedArea" :options="cityData" :props="{label: 'text'}"></el-cascader>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" :loading="areaInfo.loading" @click="addAreaOk">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <el-dialog title="推广二维码" :visible.sync="qrcode.visible" size="tiny">
       <img width="100%" :src="qrcode.url" alt="">
     </el-dialog>
@@ -138,13 +182,23 @@
 </template>
 
 <script>
+import cityData from 'src/scripts/city.data'
 export default {
   data() {
     return {
+      cityData,
       tabIndex: '0',
       qrcode: {
         visible: false,
         url: ''
+      },
+      areaInfo: {
+        slted: {},
+        sltedArea: [],
+        loading: false,
+        listVisible: false,
+        areaVisible: false,
+        list: []
       },
       marketer: {
         visible: false,
@@ -224,6 +278,52 @@ export default {
     }
   },
   methods: {
+    editArea(item) {
+      this.areaInfo.slted = item
+      this.areaInfo.list = item.areas || []
+      this.areaInfo.listVisible = true
+    },
+    addArea() {
+      this.areaInfo.areaVisible = true
+    },
+    delArea(item) {
+      let loading = this.$loading('删除中...')
+      this.$api.marketer.addArea({
+        marketersId: this.areaInfo.slted.marketersId,
+        areaId: item.areasId,
+        isAdd: 0
+      }).then(({data})=>{
+        this.areaInfo.areaVisible = false
+        this.areaInfo.list = this.areaInfo.list.filter((_item)=>{
+          return _item.areasId != item.areasId
+        })
+
+        this.$message({
+          type: 'success',
+          message: '删除成功'
+        })
+      }).finally(()=>{
+        loading.close()
+      })
+    },
+    addAreaOk() {
+      this.areaInfo.loading = true
+      this.$api.marketer.addArea({
+        marketersId: this.areaInfo.slted.marketersId,
+        provinceId: this.areaInfo.sltedArea[0] || '',
+        cityId: this.areaInfo.sltedArea[1] || '',
+        areaId: this.areaInfo.sltedArea[2] || '',
+        isAdd: 1
+      }).then(({data})=>{
+        this.areaInfo.areaVisible = false
+        this.areaInfo.list.push({
+          areasId: data.areaId,
+          areasName: data.province + data.city + data.area
+        })
+      }).finally(()=>{
+        this.areaInfo.loading = false
+      })
+    },
     printExpress(url = '') {
       window.open(url)
     },
@@ -242,6 +342,10 @@ export default {
     },
     sltChange(slteds) {
       this.list[this.tabIndex].slteds = slteds
+    },
+    sizeChange(size = 200) {
+      this.list[this.tabIndex].rows = size
+      this.getList()
     },
     pageChange(page) {
       this.getList(page)
@@ -325,5 +429,11 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-
+.l-areaInfo{
+  a{color: #20a0ff;cursor: pointer;}
+  a:hover{text-decoration: underline;}
+  td{vertical-align: top; padding: 10px;}
+  ul{margin:0; padding: 0; list-style: none;}
+  li{margin: 10px 0; width: 350px;}
+}
 </style>

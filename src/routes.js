@@ -70,7 +70,7 @@ let routes = [
       { 
         path: 'binding',      
         component: webview,         
-        name: '绑定流水',  
+        name: '用户信息',  
         meta: {
           href: 'http://report.deyila.cn/wabacus/ShowReport.wx?PAGEID=binding'  
         }

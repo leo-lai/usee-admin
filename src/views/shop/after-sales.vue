@@ -87,7 +87,14 @@
 
     <!--分页-->
     <el-col :span="24" class="l-toolbar l-text-right">
-      <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="afterSalesList.total">
+      <el-pagination
+        @size-change="sizeChange"
+        @current-change="pageChange"
+        :current-page="afterSalesList.page"
+        :page-sizes="[10, 50, 100, 200, 500, 1000]"
+        :page-size="afterSalesList.rows"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="afterSalesList.total">
       </el-pagination>
     </el-col>
     
@@ -288,6 +295,10 @@ export default {
     },
     refreshList() {
       this.getAfterSales(this.afterSalesList.page)
+    },
+    sizeChange(size = 200) {
+      this.afterSalesList.rows = size
+      this.getAfterSales()
     },
     pageChange(page = 1) {
       this.getAfterSales(page)

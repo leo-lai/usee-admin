@@ -66,7 +66,14 @@
 
     <!--分页-->
     <el-col :span="24" class="l-toolbar l-text-right">
-      <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="evaluateList.total">
+      <el-pagination
+        @size-change="sizeChange"
+        @current-change="pageChange"
+        :current-page="evaluateList.page"
+        :page-sizes="[10, 50, 100, 200, 500, 1000]"
+        :page-size="evaluateList.rows"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="evaluateList.total">
       </el-pagination>
     </el-col>
     
@@ -195,6 +202,10 @@ export default {
       }).finally(()=>{
         loading.close()
       })
+    },
+    sizeChange(size = 200) {
+      this.evaluateList.rows = size
+      this.getEvaluateList()
     },
     pageChange(page = 1) {
       this.getEvaluateList(page)

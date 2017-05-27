@@ -13,6 +13,7 @@
 				<el-col :span="9">
 					<el-menu :default-active="$route.path" mode="horizontal" class="l-nav-top">
 					  <el-menu-item index="/index" @click="$router.push('/index')">首页</el-menu-item>
+					  <el-menu-item index="1" @click="refreshDataConfig">刷新报表配置</el-menu-item>
 					</el-menu>
 				</el-col>
 				<el-col :span="4" class="userinfo">
@@ -124,6 +125,25 @@ export default {
 			//console.log('handleclose');
 		},
 		handleselect: function (a, b) {
+		},
+		refreshDataConfig() {
+			let self = this
+			let iframe = document.createElement('iframe')
+    	
+      iframe.setAttribute('style','position:absolute;visibility:hidden;height:0;width:0;');
+      iframe.addEventListener('load', function load() {
+        iframe.removeEventListener('load', load)
+        document.body.removeChild(iframe)
+        loading.close()
+        self.$message({
+        	type: 'success',
+        	message: '刷新成功'
+        })
+      })
+
+      let loading = self.$loading('刷新中...')
+      iframe.setAttribute('src', '//report.deyila.cn/wabacus/ShowReport.wx?ACTIONTYPE=updateconfig')
+      document.body.appendChild(iframe)
 		},
 		//退出登录
 		logout: function () {

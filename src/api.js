@@ -107,7 +107,7 @@ const _api = {
 		}
 	},
 	order: {
-		getList(formData = {}, page = 1, rows = 20) {
+		getList(formData = {}, page = 1, rows = 200) {
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/orderList', formData)
@@ -121,7 +121,7 @@ const _api = {
 		expressAfterSales(formData) {
 			return _http.post('/afterSalesSend', formData)
 		},
-		getAfterSales(formData = {}, page = 1, rows = 20) {
+		getAfterSales(formData = {}, page = 1, rows = 200) {
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/afterSalesList', formData)
@@ -148,12 +148,12 @@ const _api = {
 		}
 	},
 	agent: {
-		getList(formData = {}, page = 1, rows = 20){
+		getList(formData = {}, page = 1, rows = 200){
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/agentList', formData)
 		},
-		getRebateList(formData = {}, page = 1, rows = 20){
+		getRebateList(formData = {}, page = 1, rows = 200){
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/rebateRecordList', formData)
@@ -161,7 +161,7 @@ const _api = {
 		examineRebate(rebateRecordIds = '', status = '', refuseRemark = '') {
 			return _http.post('/examineRebate', { rebateRecordIds, isPass: status, refuseRemark })
 		},
-		getWithdrawalsList(formData = {}, page = 1, rows = 20){
+		getWithdrawalsList(formData = {}, page = 1, rows = 200){
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/withdrawalsList', formData)
@@ -196,14 +196,14 @@ const _api = {
 		deliveryGoods(formData = {}) { // 提货
 			return _http.post('/deliveryGoods', formData)
 		},
-		getDeliveryList(formData = {}, page = 1, rows = 20) {
+		getDeliveryList(formData = {}, page = 1, rows = 200) {
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/deliveryList', formData)
 		}
 	},
 	goods: {
-		getEvaluate(formData = {}, page = 1, rows = 20) {
+		getEvaluate(formData = {}, page = 1, rows = 200) {
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/judgeList', formData)
@@ -213,7 +213,7 @@ const _api = {
 		}
 	},
 	marketer: {
-		getList(formData = {}, page = 1, rows = 20) {
+		getList(formData = {}, page = 1, rows = 200) {
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/marketersList', formData)
@@ -224,10 +224,13 @@ const _api = {
 		add(formData = {}) {
 			return _http.post('/addMarketers', formData)
 		},
-		getScanList(formData = {}, page = 1, rows = 20) {
+		getScanList(formData = {}, page = 1, rows = 200) {
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/scanRecord', formData)
+		},
+		addArea(formData = {}) {
+			return _http.post('/marketersAreas', formData)
 		}
 	}
 }

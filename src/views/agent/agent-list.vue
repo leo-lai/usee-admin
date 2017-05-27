@@ -64,10 +64,16 @@
         <!--分页-->
         <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{agentList[0].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="agentList[0].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="agentList[0].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="agentList[0].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="agentList[0].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -135,10 +141,16 @@
         <!--分页-->
         <el-row class="l-toolbar" type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{agentList[1].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="agentList[1].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="agentList[1].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="agentList[1].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="agentList[1].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -605,6 +617,10 @@ export default {
     },
     sltChange(slteds) {
       this.agentList[this.tabIndex].slteds = slteds
+    },
+    sizeChange(size = 200) {
+      this.agentList[this.tabIndex].rows = size
+      this.getAgentList()
     },
     pageChange(page) {
       this.getAgentList(page)

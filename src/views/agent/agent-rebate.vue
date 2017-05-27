@@ -82,10 +82,16 @@
         <!--分页-->
         <el-row class="l-toolbar"  type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{rebateList[0].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="rebateList[0].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="rebateList[0].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="rebateList[0].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="rebateList[0].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -178,10 +184,16 @@
         <!--分页-->
         <el-row class="l-toolbar"  type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{rebateList[1].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="rebateList[1].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="rebateList[1].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="rebateList[1].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="rebateList[1].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -248,10 +260,16 @@
         <!--分页-->
         <el-row class="l-toolbar"  type="flex" align="middle">
           <el-col :span="4">
-            <span class="l-text-gray">共{{rebateList[2].total}}条记录</span>
           </el-col>
           <el-col :span="20" class="l-text-right">
-            <el-pagination layout="prev, pager, next" @current-change="pageChange" :page-size="20" :total="rebateList[2].total">
+            <el-pagination
+              @size-change="sizeChange"
+              @current-change="pageChange"
+              :current-page="rebateList[2].page"
+              :page-sizes="[10, 50, 100, 200, 500, 1000]"
+              :page-size="rebateList[2].rows"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="rebateList[2].total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -397,6 +415,10 @@ export default {
     },
     sltChange(slteds) {
       this.rebateList[this.tabIndex].slteds = slteds
+    },
+    sizeChange(size = 200) {
+      this.rebateList[this.tabIndex].rows = size
+      this.getRebateList()
     },
     pageChange(page) {
       this.getRebateList(page)
