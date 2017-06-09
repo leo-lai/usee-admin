@@ -78,7 +78,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="小U店员">
+      <el-tab-pane label="小U店长">
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="20">
@@ -106,7 +106,7 @@
           <el-col :span="4" class="l-text-right">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" @click="xiaoUInfo.visible = true">新增小U店员</el-button>
+                <el-button type="primary" @click="xiaoUInfo.visible = true">新增小U店长</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -239,8 +239,8 @@
     <el-dialog :visible.sync="agentInfo.preview" size="tiny">
       <img width="100%" :src="agentForm.businessLicenseImage" alt="">
     </el-dialog>
-    <!-- 新增小U店员 -->
-    <el-dialog title="新增小U店员" custom-class="l-dialog" :visible.sync="xiaoUInfo.visible" size="tiny">
+    <!-- 新增小U店长 -->
+    <el-dialog title="新增小U店长" custom-class="l-dialog" :visible.sync="xiaoUInfo.visible" size="tiny">
       <el-row type="flex" :gutter="10" align="middle">
         <el-col :span="4">手机号码</el-col>
         <el-col :span="14">
@@ -270,7 +270,7 @@
       </el-row>
       <el-row type="flex" justify="center" class="l-margin-t">
         <el-col :span="24" class="l-text-center">
-          <el-button type="primary" :loading="xiaoUInfo.submiting" @click="changeXiaoU">升级为小U店员</el-button>
+          <el-button type="primary" :loading="xiaoUInfo.submiting" @click="changeXiaoU">升级为小U店长</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -769,7 +769,7 @@ export default {
       this.$api.agent.changeXiaoU(this.xiaoUForm).then(({data}) => {
         this.$message({
           type: 'success',
-          message: '升级小U店员成功'
+          message: '升级小U店长成功'
         })
         this.xiaoUForm.phoneNumber = ''
         this.resetXiaoUForm()

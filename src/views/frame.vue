@@ -142,7 +142,7 @@ export default {
       })
 
       let loading = self.$loading('刷新中...')
-      iframe.setAttribute('src', '//report.deyila.cn/wabacus/ShowReport.wx?ACTIONTYPE=updateconfig')
+      iframe.setAttribute('src', '//report.ushiyihao.com/wabacus/ShowReport.wx?ACTIONTYPE=updateconfig')
       document.body.appendChild(iframe)
 		},
 		//退出登录

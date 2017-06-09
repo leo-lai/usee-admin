@@ -143,7 +143,7 @@
       </el-row>
     </el-dialog>
 
-    <el-dialog title="负责区域管理" custom-class="l-dialog" :visible.sync="areaInfo.listVisible" size="tiny">
+    <el-dialog title="负责区域管理" custom-class="l-dialog" :visible.sync="areaInfo.listVisible" size="tiny" :before-close="areaInfoClose">
       <table class="l-areaInfo">
         <tr>
           <td>真实姓名</td>
@@ -164,10 +164,10 @@
       </table>
     </el-dialog>
 
-    <el-dialog :visible.sync="areaInfo.areaVisible" size="tiny" :close-on-click-modal="false">
+    <el-dialog title="新增区域" :visible.sync="areaInfo.areaVisible" size="tiny" :close-on-click-modal="false">
       <el-form :inline="true" label-width="80px">
-        <el-form-item label="管理区域">
-          <el-cascader placeholder="请选择管理区域" v-model="areaInfo.sltedArea" :options="cityData" :props="{label: 'text'}"></el-cascader>
+        <el-form-item>
+          <el-cascader placeholder="请选择区域" style="width: 350px;" v-model="areaInfo.sltedArea" :options="cityData" :props="{label: 'text'}"></el-cascader>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" :loading="areaInfo.loading" @click="addAreaOk">保存</el-button>
@@ -279,6 +279,7 @@ export default {
   },
   methods: {
     editArea(item) {
+      this.areaInfo.hasDel = false
       this.areaInfo.slted = item
       this.areaInfo.list = item.areas || []
       this.areaInfo.listVisible = true
@@ -297,7 +298,7 @@ export default {
         this.areaInfo.list = this.areaInfo.list.filter((_item)=>{
           return _item.areasId != item.areasId
         })
-
+        this.areaInfo.hasDel = true
         this.$message({
           type: 'success',
           message: '删除成功'
@@ -421,6 +422,10 @@ export default {
         this.qrcode.visible = true
         this.qrcode.url = url
       }
+    },
+    areaInfoClose(done) {
+      this.areaInfo.hasDel && this.refreshList()
+      done()
     }
   },
   mounted() {

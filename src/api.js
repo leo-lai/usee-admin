@@ -4,10 +4,10 @@ import { utils, storage }      from 'src/scripts/utils'
 
 let _vue = Vue.prototype
 
-let baseUrl = 'http://api.deyila.cn/useeproject/management/admin'
+let baseUrl = 'http://api.usee1.com.cn/useeproject/management/admin'
 // 正式
-if (['admintest.usee1.com.cn', 'admintest.ushiyihao.com', 'admintest.deyila.cn'].indexOf(window.location.host) > -1) {
-  baseUrl = 'http://apitest.deyila.cn/useeproject/management/admin'
+if (['admin.ushiyihao.com'].indexOf(window.location.host) > -1) {
+  baseUrl = 'https://api.ushiyihao.com/useeproject02/management/admin'
 }
 const _http = {
   ajax(url = '', data = {}, method = 'GET', contentType = 'form') {
@@ -200,6 +200,17 @@ const _api = {
 			formData.page = page
 			formData.rows = rows
 			return _http.post('/deliveryList', formData)
+		},
+		agentUList(formData = {}, page = 1, rows = 200) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/agentExamineList', formData)
+		},
+		examineApply(formData = {}) {
+			return _http.post('/agentExamine', formData)
+		},
+		checkAreas(formData = {}) {
+			return _http.post('/checkAgentInfoAreas', formData)
 		}
 	},
 	goods: {

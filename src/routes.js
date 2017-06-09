@@ -53,11 +53,11 @@ let routes = [
   }, {
     path: '/agent',
     component: frame,
-    name: '代理管理',
+    name: '代理商管理',
     iconCls: 'l-icon-agent',
     children: [
       { path: 'list',         component: AgentList,     name: '代理商列表' },
-      { path: 'rebate',       component: AgentRebate,   name: '返利/申请' },
+      { path: 'rebate',       component: AgentRebate,   name: '审核/申请' },
       { path: 'record',       component: AgentRecord,   name: '流水/记录' },
       { path: 'setting',      component: index,         name: '基础设置',   hidden:true },
     ],
@@ -72,7 +72,7 @@ let routes = [
         component: webview,         
         name: '用户信息',  
         meta: {
-          href: 'http://report.deyila.cn/wabacus/ShowReport.wx?PAGEID=binding'  
+          href: '//report.ushiyihao.com/wabacus/ShowReport.wx?PAGEID=binding'  
         }
       },
       { 
@@ -80,15 +80,15 @@ let routes = [
         component: webview,         
         name: '返利流水',  
         meta: {
-          href: 'http://report.deyila.cn/wabacus/ShowReport.wx?PAGEID=rebaterecord'   
+          href: '//report.ushiyihao.com/wabacus/ShowReport.wx?PAGEID=rebaterecord'   
         }
       },
       { 
         path: 'orderInfo',    
         component: webview,         
-        name: '订单详情',
+        name: '订单信息',
         meta: {
-          href: 'http://report.deyila.cn/wabacus/ShowReport.wx?PAGEID=orderInfo'   
+          href: '//report.ushiyihao.com/wabacus/ShowReport.wx?PAGEID=orderInfo'   
         }
       },
     ],
