@@ -1,14 +1,11 @@
 import Vue              from 'vue'
 import axios 						from 'axios'
 import { utils, storage }      from 'src/scripts/utils'
+import appConfig      				 from 'src/scripts/app-config'
 
+let { baseUrl } = appConfig
 let _vue = Vue.prototype
 
-let baseUrl = 'http://api.usee1.com.cn/useeproject/management/admin'
-// 正式
-if (['admin.ushiyihao.com'].indexOf(window.location.host) > -1) {
-  baseUrl = 'https://api.ushiyihao.com/useeproject02/management/admin'
-}
 const _http = {
   ajax(url = '', data = {}, method = 'GET', contentType = 'form') {
   	let headers = {
@@ -242,6 +239,38 @@ const _api = {
 		},
 		addArea(formData = {}) {
 			return _http.post('/marketersAreas', formData)
+		}
+	},
+	sys: {
+		getCheckBodyList(formData = {}, page = 1, rows = 200) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/constitutionList', formData)
+		},
+		addCheckBodyQ(formData = {}) {
+			return _http.post('/constitutionEdit', formData)
+		},
+		delCheckBodyQ(questionId) {
+			return _http.post('/constitutionDelete', { questionId })
+		}
+	},
+	news: {
+		getList(formData = {}, page = 1, rows = 200) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/websiteNewsList', formData)
+		},
+		del(newsId, isDelete) {
+			return _http.post('/websiteNewsDelete', {
+				newsId,
+				isDelete
+			})
+		},
+		edit(formData = {}) {
+			return _http.post('/websiteNewsEdit', formData)
+		},
+		getInfo(newsId) {
+			return _http.post('/websiteNewsInfo', {newsId})
 		}
 	}
 }

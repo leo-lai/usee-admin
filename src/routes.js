@@ -13,7 +13,9 @@ import AgentList        from './views/agent/agent-list'
 import AgentRebate      from './views/agent/agent-rebate'
 import AgentRecord      from './views/agent/agent-record'
 
-import UserMarketer    from './views/user/user-marketer'
+import UserMarketer     from './views/user/user-marketer'
+import CheckBody        from './views/sys/check-body'
+import News             from './views/sys/news'
 
 let routes = [
   {
@@ -95,23 +97,14 @@ let routes = [
   }, {
     path: '/user',
     component: frame,
+    // single: true, //只有一个节点
     name: '系统管理',
     iconCls: 'l-icon-user',
     children: [
-      { path: 'marketing', component: UserMarketer,  name: '营销人员' }
+      { path: 'marketing', component: UserMarketer,  name: '营销人员' },
+      { path: 'check/body', component: CheckBody,  name: '体质问题' },
+      { path: 'news', component: News,  name: '官网文章' }
     ]
-  }, {
-    path: '/',
-    component: frame,
-    name: '基本设置',
-    // single: true, //只有一个节点
-    iconCls: 'l-icon-setting',
-    children: [
-      { path: 'page13', component: index, name: '系统用户' },
-      { path: 'page14', component: index, name: '部门设置' },
-      { path: 'page15', component: index, name: '角色权限' },
-    ],
-    hidden: true,
   }, {
     path: '*',
     hidden: true,

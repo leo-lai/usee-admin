@@ -845,37 +845,6 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.avatar-uploader .el-upload {
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  position: relative;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #20a0ff;
-}
-
-.avatar-uploader .el-upload__tip {
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 15px;
-  line-height: 1;
-}
-
-.avatar-uploader .avatar,
-.avatar-uploader-icon {
-  border-radius: 5px;
-  border: 1px solid #bfcbd9;
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-  vertical-align: middle;
-}
-
 .l-agent-list {
   border: 1px solid #dfe6ec;
   border-collapse: collapse;
