@@ -23,6 +23,12 @@
               <span v-else-if="scope.row.newsType == 2">护眼知识</span>
             </template>
           </el-table-column>
+          <el-table-column align="center" prop="isShare" label="代理商可否分享" min-width="100">
+            <template scope="scope">
+              <span v-if="scope.row.isShare == 1">是</span>
+              <span v-else>否</span>
+            </template>
+          </el-table-column>
           <el-table-column align="center" prop="published" label="网页显示时间" min-width="200"></el-table-column>
           <el-table-column align="center" prop="systemUsersName" label="发布人" min-width="120"></el-table-column>
           <el-table-column align="center" prop="updateDate" label="发布时间" min-width="120"></el-table-column>
@@ -67,13 +73,16 @@
           <el-input v-model="news.form.newsTitle" placeholder="不超过20个字"></el-input>
         </el-form-item>
         <el-form-item label="文章类型" prop="newsType" style="display: inline-block;">
-          <el-select v-model="news.form.newsType" placeholder="请选择">
+          <el-select v-model="news.form.newsType" placeholder="请选择" style="width: 125px;">
             <el-option label="企业动态" value="1" ></el-option>
             <el-option label="护眼知识" value="2" ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="发布时间" prop="published" style="display: inline-block;">
           <el-date-picker v-model="news.form.published" @change="timeChange" type="datetime" placeholder="选择时间" :editable="false" :picker-options="pickerOptions"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="代理商是否可分享" label-width="160px" prop="isShare" style="display: inline-block;">
+          <el-switch on-text="" off-text="" v-model="news.form.isShare"></el-switch>
         </el-form-item>
         <el-form-item label="缩略图" prop="newsMinImage">
           <el-upload ref="agentUpload" name="img_file" class="avatar-uploader" :action="$api.baseUrl + '/uploadImage'" 
@@ -182,7 +191,8 @@ export default {
           newsMinImage: '',
           published: '',
           remarks: '',
-          newsType: ''
+          newsType: '',
+          isShare: false
         } 
       },
       filters: [],
@@ -313,6 +323,7 @@ export default {
       let loading = this.$loading()
       this.$api.news.getInfo(row.newsId).then(({data})=>{
         data.newsType +=  ''
+        data.isShare = !!data.isShare
         this.news.form = Object.assign(this.news.form, data)
         this.news.visible = true
       }).finally(()=>{
@@ -323,6 +334,7 @@ export default {
       this.$refs.newsForm.validate((valid) => {
         if (valid) {
           this.news.submiting = true
+          this.news.form.isShare = Number(this.news.form.isShare)
           this.$api.news.edit(this.news.form).then(({data}) => {
             this.news.submiting = true
             this.$message({
