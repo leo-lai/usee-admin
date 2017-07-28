@@ -16,6 +16,7 @@ import AgentRecord      from './views/agent/agent-record'
 import UserMarketer     from './views/user/user-marketer'
 import CheckBody        from './views/sys/check-body'
 import News             from './views/sys/news'
+import Movie            from './views/sys/movie'
 
 let routes = [
   {
@@ -93,6 +94,14 @@ let routes = [
           href: '//report.ushiyihao.com/wabacus/ShowReport.wx?PAGEID=orderInfo'   
         }
       },
+      { 
+        path: 'activity',    
+        component: webview,         
+        name: '活动统计',
+        meta: {
+          href: '//report.ushiyihao.com/wabacus/ShowReport.wx?PAGEID=activity'   
+        }
+      },
     ],
   }, {
     path: '/user',
@@ -103,7 +112,8 @@ let routes = [
     children: [
       { path: 'marketing', component: UserMarketer,  name: '营销人员' },
       { path: 'check/body', component: CheckBody,  name: '体质问题' },
-      { path: 'news', component: News,  name: '官网文章' }
+      { path: 'news', component: News,  name: '官网文章' },
+      { path: 'movie', component: Movie,  name: '电影节活动' }
     ]
   }, {
     path: '*',

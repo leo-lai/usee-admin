@@ -1103,8 +1103,4 @@ export default {
     margin-top: -5px;
   }
 }
-.l-inner-table{
-  border-collapse:collapse;
-  th, td{padding: 10px; border: 1px solid #ddd; text-align: center;}
-}
 </style>

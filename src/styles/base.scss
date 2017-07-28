@@ -165,7 +165,7 @@ body {
 .l-text-blue{color: #20A0FF !important;}
 .l-text-fuchsia{color: #ff00ff !important;}
 .l-text-right{text-align: right !important;}
-.l-text-center{text-align: center !important;}
+.l-text-center, .l-text-center input{text-align: center !important;}
 .l-text-nowrap{white-space: nowrap;}
 .l-text-upper{text-transform: uppercase;}
 .l-text-link{color: #20A0FF; text-decoration: underline;}

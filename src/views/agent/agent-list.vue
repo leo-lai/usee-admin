@@ -29,7 +29,7 @@
           <el-col :span="4" class="l-text-right">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" @click="openAgentDialog(1)">新增合伙人</el-button>
+                <!-- <el-button type="primary" @click="openAgentDialog(1)">新增合伙人</el-button> -->
               </el-form-item>
             </el-form>
           </el-col>
@@ -106,7 +106,7 @@
           <el-col :span="4" class="l-text-right">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" @click="xiaoUInfo.visible = true">新增小U店长</el-button>
+                <!-- <el-button type="primary" @click="xiaoUInfo.visible = true">新增小U店长</el-button> -->
               </el-form-item>
             </el-form>
           </el-col>
@@ -128,14 +128,11 @@
               <span class="l-text-ok" v-else>正常使用</span>
             </template>
           </el-table-column>
-          <!-- 
           <el-table-column label="操作" min-width="150" align="center">
             <template scope="scope">
-              <el-button size="small" type="text" @click="editAgentInfo(scope.row.agentInfoId)">编辑</el-button>
-              <el-button size="small">查看二维码</el-button>
+              <el-button size="small" type="primary" @click="deliveryGoods2Dialog(scope.row.agentInfoId)">发货</el-button>
             </template>
           </el-table-column> 
-          -->
         </el-table>
         <!--列表 end-->
         <!--分页-->
@@ -286,7 +283,7 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-    <!-- 提货信息 -->
+    <!-- 合伙人提货信息 -->
     <el-dialog title="合伙人提货" custom-class="l-dialog" :visible.sync="deliveryGoods.visible" size="tiny" :close-on-click-modal="false">
       <el-form :model="deliveryGoods.form" :rules="deliveryGoods.rules" ref="deliveryGoodsForm" label-width="100px" style="width:90%;">
         <el-row>
@@ -335,13 +332,86 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <!-- 小U店长发货信息 -->
+    <el-dialog title="小U店长发货" custom-class="l-dialog" :visible.sync="deliveryGoods2.visible" :before-close="closeDelivery2Dialog" size="tiny" :close-on-click-modal="false">
+      <div class="l-margin-b-s l-text-gray">发货商品</div>
+      <el-table :data="deliveryGoods2.deliveryGoodsInfo" empty-text="您还没添加要发货的商品">
+        <el-table-column prop="goodsName" align="center" label="商品名称" min-width="200"></el-table-column>
+        <el-table-column prop="goodsNumber" align="center" label="商品数量" min-width="130">
+          <template scope="scope">
+            <el-input-number style="display:block;" size="small" :min="1" :max="1000000" v-model="scope.row.goodsNumber"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作" min-width="100">
+          <template scope="scope">
+            <el-button size="small" type="danger" @click="delDeliveryGoods(scope.row)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="l-margin l-text-center">
+        <el-button type="primary" size="small" @click="goodsListData.visible = true">添加商品</el-button>
+      </div>
+      <div class="l-margin" v-if="deliveryGoods2.isPartnerRecommend == 1">
+        <span>
+          是否扣除推荐人货款：<el-switch v-model="deliveryGoods2.form.isRebates" on-text="是" on-value="1" off-value="0" off-text="否"></el-switch>
+        </span>
+        <span class="l-margin-l">
+          推荐人：{{deliveryGoods2.recommendName}}
+        </span>
+      </div>
+      <el-form :model="deliveryGoods2.form" :rules="deliveryGoods2.rules" ref="deliveryGoods2Form" label-width="100px" style="width:90%;">
+        <el-form-item label="收货人" prop="userName">
+          <el-input v-model="deliveryGoods2.form.userName" :maxlength="50" style="width:auto;" placeholder="收货人姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式" prop="phoneNumber">
+          <el-input v-model="deliveryGoods2.form.phoneNumber" :maxlength="15" style="width:auto;" placeholder="请输入常用联系方式"></el-input>
+        </el-form-item>
+        <el-form-item label="收货地址" class="l-input-block" prop="address">
+          <el-row>
+            <el-cascader style="width:100%;" placeholder="请选择收货区域" 
+              v-model="deliveryGoods2.citySlted" :options="cityData" :props="{label: 'text', value: 'text'}"></el-cascader>
+          </el-row>
+          <el-row class="l-margin-t-s">
+            <el-input placeholder="请输入详细地址(不需要填写省市区)" v-model="deliveryGoods2.address" :maxlength="100"></el-input>  
+          </el-row>
+        </el-form-item>
+        <el-form-item label="邮寄方式" prop="expressId">
+          <el-select v-model="deliveryGoods2.form.expressId" placeholder="请选择邮寄方式">
+            <el-option v-for="item in deliveryGoods2.info.express" :key="item.expressId" 
+              :value="item.expressId" :label="item.expressName + '('+expressPayType[item.payType]+')'"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="提货备注" prop="remark">
+          <el-input type="textarea" v-model="deliveryGoods2.form.remark" :maxlength="500" placeholder="选填"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="closeDelivery2Dialog()">取消</el-button>
+          <el-button type="primary" :loading="deliveryGoods2.submiting" @click="deliveryGoods2Submit">确定发货</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <!-- 发货列表 -->
+    <el-dialog title="选择要发货的商品" custom-class="l-dialog" :visible.sync="goodsListData.visible" size="tiny" :close-on-click-modal="false">
+      <el-table :data="goodsListData.list" empty-text="没有可发货的商品">
+        <el-table-column prop="goodsName" align="center" label="商品名称" min-width="200"></el-table-column>
+        <el-table-column align="center" label="操作" min-width="120">
+          <template scope="scope">
+            <div style="padding: 0.25rem 0;">
+              <el-button size="small" :plain="true" @click="sltDeliveryGoods(scope.row)">添加此商品</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 <script>
 import cityData from 'src/scripts/city.data'
 export default {
   data() {
-     let validateGoodsNumber = (rule, value, callback) => {
+     let validateGoodsNumber = (rule, value, callback) => {                                 
       let number = Number(value)
       if (value === '') {
         callback(new Error('请输入提货数量'))
@@ -366,6 +436,18 @@ export default {
       }
     }
 
+    let validateAddress2 = (rule, value, callback) => {
+      let number = Number(value)
+      if (this.deliveryGoods2.citySlted.length === 0) {
+        callback(new Error('请选择收货区域'))
+      } else if(!this.deliveryGoods2.address){
+        callback(new Error('请输入详细地址'))
+      }else{
+        this.deliveryGoods2.form.address = this.deliveryGoods2.citySlted.join('') + this.deliveryGoods2.address
+        callback()
+      }
+    }
+
     return {
       cityData,
       cityDataSlted: [],
@@ -385,6 +467,11 @@ export default {
       xiaoUForm: {
         phoneNumber: '',
         agentInfoName: ''
+      },
+
+      goodsListData: {
+        visible: false,
+        list: []
       },
 
       expressPayType: {
@@ -442,6 +529,48 @@ export default {
           address: '',
           remark: '',
           goodsNumber: ''
+        }
+      },
+      deliveryGoods2: {
+        visible: false,
+        submiting: false,
+        isPartnerRecommend: 0,
+        recommendName: '',
+        citySlted: [],
+        address: '',
+        info: {},
+        deliveryGoodsInfo: [],
+        rules: {
+          userName: [{
+            required: true,
+            message: '请输入收货人姓名',
+            trigger: 'blur'
+          }],
+          phoneNumber: [{
+            required: true,
+            message: '请输入联系方式',
+            trigger: 'blur'
+          }],
+          expressId: [{
+            required: true,
+            type: 'number',
+            message: '请输入邮寄方式',
+            trigger: 'blur'
+          }],
+          address: [{
+            required: true,
+            validator: validateAddress2,
+            trigger: 'blur'
+          }]
+        },
+        form:{
+          deliveryGoodsInfo: [],
+          phoneNumber: '',
+          expressId: '',
+          userName: '',
+          address: '',
+          isRebates: '0',
+          remark: ''
         }
       },
       agentGoods: {
@@ -511,63 +640,69 @@ export default {
 
       tabIndex: '0',
       pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', [start, end]);
+        shortcuts: [
+          {
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
           }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
-          }
-        }]
+        ]
       },
-      agentList: [{
-        loading: false,
-        data: [],
-        slteds: [],
-        page: 1,
-        total: 0
-      }, {
-        loading: false,
-        data: [],
-        slteds: [],
-        page: 1,
-        total: 0
-      }],
+      agentList: [
+        {
+          loading: false,
+          data: [],
+          slteds: [],
+          page: 1,
+          total: 0
+        }, {
+          loading: false,
+          data: [],
+          slteds: [],
+          page: 1,
+          total: 0
+        }
+      ],
 
       filterRules: {
         searchKey: [],
         dateRange: []
       },
-      filters: [{
-        searchKey: '',
-        searchType: 'phoneNumber',
-        dateRange: [],
-        startDate: '',
-        finishDate: ''
-      }, {
-        searchKey: '',
-        searchType: 'phoneNumber',
-        dateRange: [],
-        startDate: '',
-        finishDate: ''
-      }]
+      filters: [
+        {
+          searchKey: '',
+          searchType: 'phoneNumber',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        }, {
+          searchKey: '',
+          searchType: 'phoneNumber',
+          dateRange: [],
+          startDate: '',
+          finishDate: ''
+        }
+      ]
     }
   },
   methods: {
@@ -669,6 +804,79 @@ export default {
           return false
         }
       })
+    },
+    deliveryGoods2Dialog(agentId = '') {
+      this.deliveryGoods2.visible = true
+      let loading = this.$loading()
+      this.$api.agent.deliveryGoodsBefore(agentId).then(({data}) => {
+        this.goodsListData.list = data.goodsList.map((item)=>{
+          item.goodsNumber = 1
+          item.slted = false
+          return item
+        })
+
+        this.deliveryGoods2.info.express = data.express
+
+        this.deliveryGoods2.form.isRebates = data.isPartnerRecommend + ''
+        this.deliveryGoods2.form.agentInfoId = agentId
+        this.deliveryGoods2.form.userName = data.agentInfoName
+        this.deliveryGoods2.form.address = data.agentAddress
+        this.deliveryGoods2.form.phoneNumber = data.phoneNumber
+      }).finally(() => {
+        loading.close()
+      })
+    },
+    deliveryGoods2Submit() {
+      if(this.deliveryGoods2.deliveryGoodsInfo.length === 0){
+        this.$message({
+          type: 'error',
+          message: '请选择要发货的商品'
+        })
+        return
+      }
+
+      this.deliveryGoods2.form.deliveryGoodsInfo = window.JSON.stringify(this.deliveryGoods2.deliveryGoodsInfo)
+
+      this.$refs.deliveryGoods2Form.validate((valid) => {
+        if (valid) {
+          this.deliveryGoods2.submiting = true
+          this.$api.agent.deliveryGoods2(this.deliveryGoods2.form).then(({data}) => {
+            this.$message({
+              type: 'success',
+              message: '发货成功'
+            })
+            this.closeDelivery2Dialog()
+          }).finally(() => {
+            this.deliveryGoods2.submiting = false
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    sltDeliveryGoods(item) {
+      item.slted = !item.slted
+      this.goodsListData.list.forEach(_item=>{
+        _item.slted && this.deliveryGoods2.deliveryGoodsInfo.push(_item)
+      })
+
+      this.goodsListData.list = this.goodsListData.list.filter(_item=>!_item.slted)
+      this.goodsListData.visible = false
+    },
+    delDeliveryGoods(item) {
+      item.slted = !item.slted
+      this.deliveryGoods2.deliveryGoodsInfo.forEach(_item=>{
+        !_item.slted && this.goodsListData.list.unshift(_item)
+      })
+
+      this.deliveryGoods2.deliveryGoodsInfo = this.deliveryGoods2.deliveryGoodsInfo.filter(_item=>_item.slted)
+    },
+    closeDelivery2Dialog(done){
+      this.deliveryGoods2.deliveryGoodsInfo = []
+      this.$refs.deliveryGoods2Form.resetFields()
+      this.deliveryGoods2.visible = false
+      done && done()
     },
     stockAdmin(agentInfoId = '') { // 库存管理
       this.agentGoods.visible = true

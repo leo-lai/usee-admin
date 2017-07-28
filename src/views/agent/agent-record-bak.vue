@@ -1,7 +1,7 @@
 <template>
   <div class="l-agent">
     <el-tabs v-model="tabIndex" type="card" @tab-click="tabClick">
-      <el-tab-pane label="小U发货记录">
+      <el-tab-pane label="提货记录">
         <!--过滤查询-->
         <el-row class="l-toolbar">
           <el-col :span="24">
@@ -9,8 +9,7 @@
               <el-form-item prop="searchKey">
                 <el-input placeholder="请输入内容" style="width: 350px;" v-model="filters[0].searchKey" >
                   <el-select slot="prepend" placeholder="搜索类型" v-model="filters[0].searchType">
-                    <el-option label="扣除对象" value="superAgentInfoName"></el-option>
-                    <el-option label="发货单号" value="deliveryCode"></el-option>
+                    <el-option label="提货单号" value="deliveryCode"></el-option>
                     <el-option label="手机号码" value="phoneNumber"></el-option>
                   </el-select>
                   <el-button slot="append" icon="search" @click="search"></el-button>
@@ -30,33 +29,15 @@
         <el-table :data="list[0].data" highlight-current-row v-loading="list[0].loading" @selection-change="sltChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="index" label="#" width="55"></el-table-column>
-          <el-table-column prop="deliveryCode" label="发货单号" min-width="100"></el-table-column>
-          <el-table-column prop="agentInfoName" label="发货对象" min-width="100"></el-table-column>
-          <el-table-column label="发货商品" min-width="100">
-            <template scope="scope">
-              <el-popover trigger="hover" placement="top">
-                <table class="l-inner-table">
-                  <tr>
-                    <th>商品名称</th>
-                    <th>商品数量</th>
-                  </tr>
-                  <tr v-for="item in scope.row.goodsInfos">
-                    <td>{{item.goodsName}}</td>
-                    <td>{{item.goodsNumber}}</td>
-                  </tr>
-                </table>
-                <div slot="reference">
-                  <el-tag>查看商品</el-tag>
-                </div>
-              </el-popover>
-            </template>
-          </el-table-column>
+          <el-table-column prop="deliveryCode" label="提货单号" min-width="120"></el-table-column>
+          <el-table-column prop="goodsTypeName" label="提货商品" min-width="120"></el-table-column>
+          <el-table-column prop="goodsNumber" label="提货数量" align="center" min-width="80"></el-table-column>
+          <el-table-column prop="startDate" label="提货时间" min-width="120"></el-table-column>  
           <el-table-column prop="expressCode" label="快递单号" min-width="100"></el-table-column>
-          <el-table-column prop="systemUserName" label="发货人" min-width="100"></el-table-column>
-          <el-table-column prop="startDate" label="发货时间" width="110"></el-table-column>  
-          <el-table-column prop="remark" label="备注" min-width="150" :show-overflow-tooltip="true"></el-table-column>  
-          <el-table-column prop="superAgentInfoName" label="扣除对象" min-width="100"></el-table-column>
-          <el-table-column prop="paymentForGoods" label="货款金额" min-width="100" align="center"></el-table-column>
+          <el-table-column prop="userName" label="收货人" min-width="100"></el-table-column>
+          <el-table-column prop="phoneNumber" label="联系方式" min-width="100"></el-table-column>
+          <el-table-column prop="address" label="发货地址" min-width="120"></el-table-column>
+          <el-table-column prop="systemUserName" label="操作人" min-width="100"></el-table-column>
           <el-table-column label="操作" min-width="100" align="center">
             <template scope="scope">
               <el-button size="small" type="text" @click="printExpress(scope.row.expressURL)">打印快递单</el-button>

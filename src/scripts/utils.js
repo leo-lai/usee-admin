@@ -384,7 +384,7 @@ export let utils = {
       width = width || 320
 
       if(!src){ 
-        return `https://placeholdit.imgix.net/~text?txtsize=20&bg=ffffff&txtclr=999&txt=image&w=${width}&h=${width}` 
+        return `https://placeholdit.imgix.net/~text?txtsize=12&bg=eee&txtclr=999&txt=图片缺失&w=${width}&h=${width}` 
       }
 
       if(src.indexOf('clouddn.com') === -1){

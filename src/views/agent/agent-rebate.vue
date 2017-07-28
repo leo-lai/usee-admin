@@ -37,7 +37,8 @@
                 <el-button-group>
                   <el-button @click="clearFilter">清除过滤</el-button>
                   <el-button @click="refreshList">刷新列表</el-button>
-                </el-button-group>  
+                  <el-button :disabled="rebateList[0].slteds.length===0" @click="examines">批量通过</el-button>
+                </el-button-group>
               </el-form-item>
             </el-form>
           </el-col>
@@ -315,28 +316,41 @@
         <el-table :data="rebateList[3].data" highlight-current-row v-loading="rebateList[3].loading" @selection-change="sltChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="index" label="#" width="55"></el-table-column>
-          <el-table-column prop="agentInfoName" label="真实姓名" min-width="120"></el-table-column>
-          <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
-          <el-table-column prop="agentId" label="申请代理商类型" min-width="100">
+          <el-table-column prop="agentInfoName" label="真实姓名" min-width="100"></el-table-column>
+          <el-table-column prop="phoneNumber" label="联系方式" width="130"></el-table-column>
+          <el-table-column prop="agentId" label="申请类型" min-width="100">
             <template scope="scope">
               <span v-if="scope.row.agentId == 1">小U店长</span>
               <span v-if="scope.row.agentId == 2">区域合伙人</span>
             </template>
           </el-table-column>
-          <el-table-column prop="becomeAgentDate" label="申请时间" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="becomeAgentDate" label="申请时间" align="center" width="110"></el-table-column>
+          <el-table-column prop="idCards" label="身份证号" align="center" min-width="120"></el-table-column>
           <el-table-column prop="image" label="营业执照" align="center" min-width="120">
             <template scope="scope">
               <img style="display:block;margin:10px auto;width:60px;height:60px;" @click="licenceImageShow(scope.row.image)" :src="$utils.image.thumb(scope.row.image, 60, 60)" alt="">
             </template>
           </el-table-column>
-          <el-table-column prop="recommendName" label="推荐代理商" align="center" min-width="120"></el-table-column>  
-          <el-table-column prop="agentState" label="审核状态" align="center" min-width="100">
+          <el-table-column prop="recommendName" label="推荐代理商" align="center" min-width="120">
+            <template scope="scope">
+              <div v-if="scope.row.recommendName">
+                <span>{{scope.row.recommendName}}</span><br>
+                <span class="l-fs-xs">剩余推荐小U数量({{scope.row.recommendNumber}})</span>
+              </div>
+            </template>
+          </el-table-column>  
+          <el-table-column prop="recommendExamineRemarks" label="申请备注" min-width="150"></el-table-column>
+          <el-table-column prop="agentState" label="审核状态" align="center" min-width="110">
             <template scope="scope">
               <span class="l-text-warn" v-if="scope.row.agentState == 0">未审核</span>
               <span class="l-text-ok" v-if="scope.row.agentState == 1">已通过</span>
               <span class="l-text-error" v-if="scope.row.agentState == 2">已拒绝</span>
+              <div class="l-fs-xs l-lh-s l-margin-t-s" v-if="scope.row.agentId == 1">
+                <span v-if="scope.row.recommendExamineState == 0">(该小U上级代理未审核)</span>
+                <span v-else>(该小U上级代理已通过)</span>  
+              </div>
             </template>
-          </el-table-column>
+          </el-table-column>  
           <el-table-column prop="rebateRecordState" label="操作" align="center" min-width="100">
             <template scope="scope">
               <el-button size="small" v-if="scope.row.agentState == 0" type="text" @click.native.prevent="examineAreaDialog(scope.row)">审核</el-button>
@@ -431,7 +445,7 @@
     </el-dialog>
 
     <el-dialog title="营业执照" :visible.sync="licenceImage.visible" size="tiny">
-      <img width="100%" :src="licenceImage.url" alt="">
+      <img width="100%" :src="licenceImage.url" alt="" key="licenceImage">
     </el-dialog>
   </div>
 </template>
@@ -619,6 +633,10 @@ export default {
       rebateList.loading = true
       let promise
       switch(Number(this.tabIndex)) {
+        case 0:
+          formData.rebateRecordState = filter.rebateRecordState
+          promise = this.$api.agent.getRebateList(formData, page, rebateList.rows)
+          break
         case 1:
           formData.withdrawalsState = filter.withdrawalsState
           promise = this.$api.agent.getWithdrawalsList(formData, page, rebateList.rows)
@@ -667,6 +685,33 @@ export default {
           message: '操作成功'
         })
         this.examineInfo.visible = false
+        this.refreshList()
+      }).finally(()=>{
+        loading.close()
+      })
+    },
+    examines() { // 批量通过
+      let rebateRecordIds = []
+      this.rebateList[0].slteds.forEach((item)=>{
+        if(item.isExamine > 0 && item.rebateRecordState == 0){
+          rebateRecordIds.push(item.rebateRecordId)  
+        }
+      })
+
+      if(rebateRecordIds.length === 0){
+        this.$message({
+          type: 'info',
+          message: '没有可审核通过的流水'
+        })
+        return
+      }
+
+      let loading = this.$loading()
+      this.$api.agent.examineRebate(rebateRecordIds.join(','), 1, '').then(()=>{
+        this.$message({
+          type: 'success',
+          message: '批量审核通过成功'
+        })
         this.refreshList()
       }).finally(()=>{
         loading.close()
@@ -772,8 +817,20 @@ export default {
       })
     },
     licenceImageShow(url = '') {
-      this.licenceImage.url = url
-      this.licenceImage.visible = true
+      let loading = this.$loading()
+      let promise = new Promise((resolve, reject)=>{
+        let img = new Image()
+        img.onload = resolve
+        img.onerror = reject
+        img.src = url
+      })
+
+      promise.then((img)=>{
+        this.licenceImage.url = url  
+        this.licenceImage.visible = true
+      }).finally(()=>{
+        loading.close()
+      })
     }
   },
   mounted() {

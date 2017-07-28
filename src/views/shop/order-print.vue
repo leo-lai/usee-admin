@@ -1,30 +1,56 @@
 <template>
 	<div class="l-print">
 		<!--startprint-->
-		<div class="l-text-center l-margin-tb">
-			<h3>U视一号订单信息</h3>
-			<p>客服电话：020-85655842</p>
-			<p>公司官网：http://www.usee1.cn</p>
-		</div>
-		<div class="l-flex-hc l-margin-tb-m">
-			<div class="l-rest">订单编号：{{orderInfo.orderCode}}</div>
-			<div class="l-rest">下单时间：{{orderInfo.startDate}}</div>
-			<div class="l-rest">支付时间：{{orderInfo.payDate}}</div>
-			<div class="l-rest">支付方式：{{payType[orderInfo.paymentMethod]}}</div>
-		</div>
-		<el-table :data="orderInfo.goodsInfo" v-loading="loading">
-      <el-table-column prop="goodsCode" label="商品编号" min-width="150"></el-table-column>
-      <el-table-column prop="goodsName" label="商品名称" min-width="150"></el-table-column>
-      <el-table-column prop="goodsNumber" label="数量" align="center" min-width="150"></el-table-column>
-      <el-table-column prop="goodsAmount" label="单价(元)" align="center" min-width="150"></el-table-column>
-    </el-table>
-    <div class="l-flex-hc l-margin-tb-m">
-    	<p class="l-rest">收&ensp;货&ensp;人：{{orderInfo.receiverUsersInfo}}</p>
-    	<p class="l-rest">收货地址：{{orderInfo.address}}</p>
+    <div class="l-print-one">
+  		<div class="l-text-center l-margin-tb">
+  			<h3>U视一号订单信息</h3>
+  			<p>客服电话：020-85655842</p>
+  			<p>公司官网：http://www.usee1.cn</p>
+  		</div>
+  		<div class="l-flex-hc l-margin-tb-m">
+  			<div class="l-rest">订单编号：{{orderInfo.orderCode}}</div>
+  			<div class="l-rest">下单时间：{{orderInfo.startDate}}</div>
+  			<div class="l-rest">支付时间：{{orderInfo.payDate}}</div>
+  			<div class="l-rest">支付方式：{{payType[orderInfo.paymentMethod]}}</div>
+  		</div>
+  		<el-table :data="orderInfo.goodsInfo" v-loading="loading">
+        <el-table-column prop="goodsCode" label="商品编号" min-width="150"></el-table-column>
+        <el-table-column prop="goodsName" label="商品名称" min-width="150"></el-table-column>
+        <el-table-column prop="goodsNumber" label="数量" align="center" min-width="150"></el-table-column>
+        <el-table-column prop="goodsAmount" label="单价(元)" align="center" min-width="150"></el-table-column>
+      </el-table>
+      <div class="l-flex-hc l-margin-tb-m">
+      	<p class="l-rest">收&ensp;货&ensp;人：{{orderInfo.receiverUsersInfo}}</p>
+      	<p class="l-rest">收货地址：{{orderInfo.address}}</p>
+      </div>
     </div>
-    <br> <br>
+    <hr class="l-hr" />
+    <div class="l-print-two">
+      <div class="l-text-center l-margin-tb">
+        <h3>U视一号订单信息</h3>
+        <p>客服电话：020-85655842</p>
+        <p>公司官网：http://www.usee1.cn</p>
+      </div>
+      <div class="l-flex-hc l-margin-tb-m">
+        <div class="l-rest">订单编号：{{orderInfo.orderCode}}</div>
+        <div class="l-rest">下单时间：{{orderInfo.startDate}}</div>
+        <div class="l-rest">支付时间：{{orderInfo.payDate}}</div>
+        <div class="l-rest">支付方式：{{payType[orderInfo.paymentMethod]}}</div>
+      </div>
+      <el-table :data="orderInfo.goodsInfo" v-loading="loading">
+        <el-table-column prop="goodsCode" label="商品编号" min-width="150"></el-table-column>
+        <el-table-column prop="goodsName" label="商品名称" min-width="150"></el-table-column>
+        <el-table-column prop="goodsNumber" label="数量" align="center" min-width="150"></el-table-column>
+        <el-table-column prop="goodsAmount" label="单价(元)" align="center" min-width="150"></el-table-column>
+      </el-table>
+      <div class="l-flex-hc l-margin-tb-m">
+        <p class="l-rest">收&ensp;货&ensp;人：{{orderInfo.receiverUsersInfo}}</p>
+        <p class="l-rest">收货地址：{{orderInfo.address}}</p>
+      </div>
+    </div>
+    <br><br>
     <div class="l-text-center">
-    	<img width="100" src="~assets/lizong.jpg" alt="">
+      <img width="100" src="~assets/lizong.jpg" alt="">
     </div>
     <!--endprint-->
     <br><br><br>
@@ -66,6 +92,7 @@ export default {
 }
 </script>
 <style scoped lang="scss" media="print">
+.l-hr{margin: 2rem 0; border:none; border-top: 1pt dashed #000;}
 .l-print{
 	width: 1000px; margin: 30px auto;
 	p{margin: 5px 0;}

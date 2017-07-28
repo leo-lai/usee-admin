@@ -144,7 +144,7 @@ const _api = {
 			return _http.post('/sendOrder', formData)
 		}
 	},
-	agent: {
+	agent: { // 代理商管理
 		getList(formData = {}, page = 1, rows = 200){
 			formData.page = page
 			formData.rows = rows
@@ -208,6 +208,12 @@ const _api = {
 		},
 		checkAreas(formData = {}) {
 			return _http.post('/checkAgentInfoAreas', formData)
+		},
+		deliveryGoodsBefore(agentInfoId = '') { // 小U发货
+			return _http.post('/deliveryGoodsBefore', {agentInfoId})
+		},
+		deliveryGoods2(formData = {}) { // 小U发货
+			return _http.post('/deliveryGoods', formData)
 		}
 	},
 	goods: {
@@ -271,6 +277,30 @@ const _api = {
 		},
 		getInfo(newsId) {
 			return _http.post('/websiteNewsInfo', {newsId})
+		}
+	},
+	movie: {
+		getList(formData = {}, page = 1, rows = 200) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/filmFestivalList')
+		},
+		edit(formData = {}) {
+			return _http.post('/addOrEdit', formData)
+		},
+		send(formData = {}) {
+			return _http.post('/deliveryTicket', formData)
+		},
+		cancel(projectId = '') {
+			return _http.post('/offTheShelf', { projectId })
+		},
+		getTickets(formData = {}, page = 1, rows = 200) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/ticketsList', formData)
+		},
+		cancelTicket(ticketsId = '') {
+			return _http.post('/cancelTicket', { ticketsId })
 		}
 	}
 }
