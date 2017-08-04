@@ -101,7 +101,7 @@
         <!--列表-->
         <el-table :data="list[1].data" highlight-current-row v-loading="list[1].loading" >
           <el-table-column align="center" type="index" label="#" width="80"></el-table-column>
-          <el-table-column prop="projectName" label="电影名称" min-width="200"></el-table-column>
+          <el-table-column prop="projectName" label="电影名称" min-width="150"></el-table-column>
           <el-table-column align="center" prop="number" label="券码" min-width="100"></el-table-column>
           <el-table-column align="center" prop="userName" label="领取人" min-width="100"></el-table-column>
           <el-table-column align="center" prop="phone" label="领取人电话" min-width="100"></el-table-column>
@@ -111,7 +111,7 @@
               <span v-if="scope.row.getTicketWay === 2">系统派送</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" prop="createDate" label="领取时间" width="150"></el-table-column>
+          <el-table-column align="center" prop="createDate" label="领取时间" width="110"></el-table-column>
           <el-table-column align="center" prop="remarks" label="备注" width="200"></el-table-column>
           <el-table-column align="center" prop="projectState" label="状态" min-width="100">
             <template scope="scope">
@@ -120,6 +120,8 @@
               <span class="l-text-error" v-if="scope.row.projectState === 2">已作废</span>
             </template>
           </el-table-column>
+          <el-table-column align="center" prop="verificationUserName" label="核销人" min-width="100"></el-table-column>
+          <el-table-column align="center" prop="verificationDate" label="核销时间" width="110"></el-table-column>
           <el-table-column label="操作" align="center" min-width="120">
             <template scope="scope">
               <el-button size="small" v-if="scope.row.projectState === 0" @click="cancelTicket(scope.row)">作废</el-button>

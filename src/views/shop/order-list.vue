@@ -86,11 +86,11 @@
               <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看详情</el-button>
               <el-button v-if="scope.row.ordersState == 2" size="small" type="text" @click.native.prevent="examine(1, scope.row.orderId)">审核通过</el-button>
               <template v-if="scope.row.ordersState == 3">
-                <el-button size="small" type="text" @click.native.prevent="print(scope.row.orderId)">打印订单</el-button>
+                <el-button size="small" type="text" @click.native.prevent="print(scope.row.orderId)">打印</el-button>
                 <el-button size="small" type="text" @click.native.prevent="express(scope.row.orderId)">发货</el-button>
               </template>
               <template v-if="scope.row.ordersState == 4">
-                <el-button size="small" type="text" @click.native.prevent="expressView(scope.row.expressURL)">查看快递单</el-button>
+                <el-button size="small" type="text" @click.native.prevent="expressView(scope.row.expressURL)">快递单</el-button>
               </template>
             </template>
           </el-table-column>
@@ -458,7 +458,8 @@
           <el-table-column align="center" label="操作" min-width="120">
             <template scope="scope">
               <el-button size="small" type="text" @click.native.prevent="getOrderInfo(scope.row.orderId)">查看</el-button>
-              <el-button v-if="scope.row.ordersState == 4" size="small" type="text" @click.native.prevent="expressView(scope.row.expressURL)">查看快递单</el-button>
+              <el-button size="small" type="text" @click.native.prevent="print(scope.row.orderId)">打印</el-button>
+              <el-button v-if="scope.row.ordersState == 4" size="small" type="text" @click.native.prevent="expressView(scope.row.expressURL)">快递单</el-button>
             </template>
           </el-table-column>
         </el-table>

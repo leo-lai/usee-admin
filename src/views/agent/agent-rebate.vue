@@ -281,14 +281,15 @@
           <el-col :span="24">
             <el-form ref="filterForm-2" :model="filters[3]" :rules="filterRules" :inline="true">
               <el-form-item label="审核状态">
-                <el-select placeholder="审核状态" style="width:150px;" v-model="filters[3].rebateRecordState" @change="getRebateList(1)">
+                <el-select placeholder="审核状态" style="width:150px;" v-model="filters[3].agentState" @change="getRebateList(1)">
                   <el-option label="全部" value=""></el-option>
-                  <el-option label="未审核" value="1"></el-option>
-                  <el-option label="已审核" value="2"></el-option>
+                  <el-option label="未审核" value="0"></el-option>
+                  <el-option label="已通过" value="1"></el-option>
+                  <el-option label="已拒绝" value="2"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="申请类型">
-                <el-select placeholder="申请类型" style="width:150px;" v-model="filters[3].rebateRecordState" @change="getRebateList(1)">
+                <el-select placeholder="申请类型" style="width:150px;" v-model="filters[3].agentId" @change="getRebateList(1)">
                   <el-option label="全部" value=""></el-option>
                   <el-option label="小U店长" value="1"></el-option>
                   <el-option label="区域合伙人" value="2"></el-option>
@@ -542,6 +543,7 @@ export default {
         searchKey: [],
         dateRange: [],
         rebateRecordState: [],
+        agentState: [],
         agentId: []
       },
       filters:[
@@ -574,7 +576,7 @@ export default {
           searchType: 'phoneNumber',
           dateRange: [],
           agentId: '',
-          rebateRecordState: '',
+          agentState: '',
           startDate: '',
           finishDate: ''
         }
@@ -642,6 +644,7 @@ export default {
           promise = this.$api.agent.getWithdrawalsList(formData, page, rebateList.rows)
           break
         case 3:
+          formData.agentState = filter.agentState
           promise = this.$api.agent.agentUList(formData, page, rebateList.rows)
           break
         default:

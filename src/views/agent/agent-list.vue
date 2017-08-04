@@ -42,10 +42,11 @@
           <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
           <el-table-column prop="area" label="代理区域" min-width="150"></el-table-column>
           <el-table-column prop="numberOfPeople" label="客户人数" align="center" min-width="120"></el-table-column>
-          <el-table-column prop="accumulatedIncome" label="累计收益(元)" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="accumulatedIncome" label="已返利金额" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="rebateRecordAmount" label="总返利(含未审核)" align="center" min-width="150"></el-table-column>
           <el-table-column prop="accountBalance" label="账户余额(元)" align="center" min-width="120"></el-table-column>
           <el-table-column prop="followNumber" label="关联合伙人" align="center" min-width="120"></el-table-column>
-          <el-table-column prop="becomeAgentDate" label="加入日期" min-width="160"></el-table-column>
+          <el-table-column prop="becomeAgentDate" label="加入日期" width="110"></el-table-column>
           <el-table-column label="订单状态" align="center" min-width="120">
             <template scope="scope">
               <span class="l-text-error" v-if="scope.row.isFrozen">账户冻结</span>
@@ -118,10 +119,11 @@
           <el-table-column prop="agentInfoName" label="微信昵称" min-width="120"></el-table-column>
           <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
           <el-table-column prop="numberOfPeople" label="客户人数" align="center" min-width="120"></el-table-column>
-          <el-table-column prop="accumulatedIncome" label="累计收益(元)" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="accumulatedIncome" label="已返利金额" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="rebateRecordAmount" label="总返利(含未审核)" align="center" min-width="150"></el-table-column>
           <el-table-column prop="accumulatedIncome" label="累计销售(套)" align="center" min-width="120"></el-table-column>
           <el-table-column prop="accountBalance" label="账户余额(元)" align="center" min-width="120"></el-table-column>
-          <el-table-column prop="becomeAgentDate" label="成为小U时间" min-width="120"></el-table-column>
+          <el-table-column prop="becomeAgentDate" label="成为时间" width="110"></el-table-column>
           <el-table-column label="状态" align="center" min-width="120">
             <template scope="scope">
               <span class="l-text-error" v-if="scope.row.isFrozen">已取消小U资格</span>

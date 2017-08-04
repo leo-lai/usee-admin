@@ -302,6 +302,25 @@ const _api = {
 		cancelTicket(ticketsId = '') {
 			return _http.post('/cancelTicket', { ticketsId })
 		}
+	},
+	store: {
+		getList(formData = {}, page = 1, rows = 200) {
+			formData.page = page
+			formData.rows = rows
+			return _http.post('/storeList')
+		},
+		getXiaoU(formData = {}) {
+			return _http.post('/storeGetAgent', formData)
+		},
+		getMarketers(formData = {}) {
+			return _http.post('/storeGetMarketers', formData)
+		},
+		edit(formData = {}) {
+			return _http.post('/storeAddOrEdit', formData)
+		},
+		disable(formData = {}) {
+			return _http.post('/changeStoreState', formData)
+		}
 	}
 }
 

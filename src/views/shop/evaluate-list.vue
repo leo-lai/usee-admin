@@ -44,6 +44,7 @@
     <el-table :data="evaluateList.data" highlight-current-row v-loading="evaluateList.loading" @selection-change="sltChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
+      <el-table-column prop="orderCode" label="订单号" min-width="120"></el-table-column>
       <el-table-column prop="judgegDate" label="评论时间" min-width="120"></el-table-column>
       <el-table-column prop="userName" label="买家名称" min-width="120" align="center"></el-table-column>
       <el-table-column prop="phoneNumber" label="联系方式" min-width="120"></el-table-column>
