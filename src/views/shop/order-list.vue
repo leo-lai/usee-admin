@@ -666,10 +666,13 @@
           <div class="l-inline-row _33">
             <p class="_td">订单编号：{{orderInfo.data.orderCode}}</p>
             <p class="_td">订单金额：{{orderInfo.data.amount}}元</p>
+            <p class="_td">订单来源：{{orderInfo.data.salesMode}}</p>
             <p class="_td">买家名称：{{orderInfo.data.userName}}</p>
             <p class="_td">买家手机：{{orderInfo.data.phoneNumber}}</p>
-            <p class="_td">订单来源：{{orderInfo.data.salesMode}}</p>
-            <p class="_td">代&ensp;理&ensp;商：{{orderInfo.data.agentInfoName}}</p>
+            <br>
+            <p class="_td">上级代理：{{orderInfo.data.agentInfoName}}</p>
+            <p class="_td">窜客对象：{{orderInfo.data.tempBindingUserName}}</p>
+            <br>
             <p class="_td">下单时间：{{orderInfo.data.startDate}}</p>
             <p class="_td">支付时间：{{orderInfo.data.payDate}}</p>
             <p class="_td">支付方式：{{orderInfo.data.paymentMethod === 1 ? '微信支付' : ''}}</p>
