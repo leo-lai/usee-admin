@@ -4,10 +4,10 @@ import VueRouter        from 'vue-router'
 import ElementUI        from 'element-ui'
 import Vuex             from 'vuex'
 
-import { storage }      from './scripts/utils'
-import api              from './api'
 import store            from './vuex/store'
 import routes           from './routes'
+import { storage }      from './scripts/utils'
+import api              from './api'
 import App              from './App'
 
 // import NProgress        from 'nprogress'
@@ -50,14 +50,11 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.afterEach(transition => {
+router.afterEach((to, from) => {
   // NProgress.done()
 })
 
-Vue._vue = new Vue({
-  //el: '#app',
-  //template: '<App/>',
-  //components: { App }
+new Vue({
   router,
   store,
   render: h => h(App)
